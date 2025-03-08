@@ -1,2 +1,2 @@
-# VANGALIS
+# VALANGLIS
 ITP Semesterprojekt
