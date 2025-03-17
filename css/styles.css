@@ -1,0 +1,147 @@
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+* {
+    font-family: 'Press Start 2P', monospace;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+body {
+    /* background-color: #ede4ff; */
+    background-image: url('../images/8-bit-background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 0;
+}
+
+.games-container {
+    margin-top: 40px;
+    gap: 30px;
+    margin-bottom: 80px;
+}
+
+.game-div {
+    background-color: whitesmoke;
+    border: 4px solid #646363;
+    box-shadow: 4px 4px 0px #3a3a3a, 8px 8px 0px #1a1a1a;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    padding: 20px;
+    margin-top: 10px;
+    width: 300px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    text-transform: uppercase;
+    image-rendering: pixelated;
+    transition: all 0.1s ease-in-out;
+    border-radius: 5px;
+}
+
+.game-div img {
+    image-rendering: pixelated;
+    width: 80%;
+}
+
+.game-div:hover {
+    transform: translateY(-4px);
+    background-color: whitesmoke;
+    border-color: #3a3a3a;
+    box-shadow: 4px 4px 0px #1a1a1a, 8px 8px 0px #000000;
+}
+
+.game-div:active {
+    transform: translateY(2px);
+    background-color: #dfdede;
+    border-color: #2a2a2a;
+    box-shadow: 2px 2px 0px #1a1a1a, 4px 4px 0px #000000;
+}
+
+.valanglis-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.valanglis-logo {
+    margin-top: 40px;
+    width: 300px;
+    height: auto;
+}
+
+
+/* Responsive styles - MOBILE */
+@media only screen and (max-width: 600px) {
+
+    .games-container {
+        margin-bottom: 80px;
+    }
+    
+}
+/* Memory_gamer */
+.memory-game-container {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 15px;
+            justify-content: center;
+            margin-top: 60px;
+        }
+
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border: 3px solid #3a3a3a;
+            box-shadow: 4px 4px 0px #1a1a1a;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .card-front {
+            background-color: #dfdede;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #7f7fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
