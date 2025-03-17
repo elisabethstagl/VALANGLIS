@@ -97,4 +97,51 @@ body {
     }
     
 }
+/* Memory_gamer */
+.memory-game-container {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 15px;
+            justify-content: center;
+            margin-top: 60px;
+        }
 
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border: 3px solid #3a3a3a;
+            box-shadow: 4px 4px 0px #1a1a1a;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .card-front {
+            background-color: #dfdede;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #7f7fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
