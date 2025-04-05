@@ -1,10 +1,15 @@
 @import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
 
+
+/* ========== OVERALL STYLES ========== */
+
+
 * {
     font-family: 'Press Start 2P', monospace;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     display: flex;
@@ -13,12 +18,6 @@ html, body {
 
 .container {
     flex: 1;
-}
-
-footer {
-    color: white;
-    text-align: center;
-    padding: 10px;
 }
 
 body {
@@ -31,10 +30,65 @@ body {
     padding: 0;
 }
 
+a {
+    text-decoration: none;
+}
+
+
+/* ========== HEADER ========== */
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+
+.user-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-icon-container svg {
+    margin-top: 40px;
+    transition: fill 0.3s ease;
+}
+
+.user-icon-container svg:hover {
+    fill: white;
+}
+
+.valanglis-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.valanglis-logo {
+    margin-top: 40px;
+    width: 230px;
+    height: auto;
+}
+
+
+/* ========== FOOTER ========== */
+
+footer {
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+
+/* ========== INDEX ========== */
+
 .games-container {
     margin-top: 40px;
     gap: 30px;
     margin-bottom: 80px;
+    justify-content: space-around;
 }
 
 .game-div {
@@ -76,16 +130,14 @@ body {
     box-shadow: 2px 2px 0px #1a1a1a, 4px 4px 0px #000000;
 }
 
-.valanglis-logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.valanglis-logo {
-    margin-top: 40px;
-    width: 300px;
+.bee-image {
+    position: fixed;
+    width: 30px;
     height: auto;
+    pointer-events: none;
+    z-index: 999;
+    transition: transform 0.05s linear;
+    image-rendering: pixelated;
 }
 
 
@@ -95,6 +147,182 @@ body {
     .games-container {
         margin-bottom: 80px;
     }
-    
+
+}
+
+
+/* ========== LOGIN ========== */
+
+.login-image {
+    position: absolute;
+    height: auto;
+    width: 230px;
+    bottom: 20px;
+}
+
+.form-box h4 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.small-label {
+    font-size: 12px;
+    display: block;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.retro-input {
+    width: 280px;
+    background-color: #fffdd0;
+    border: 4px solid #646363;
+    box-shadow: 2px 2px 0px #3a3a3a, 4px 4px 0px #1a1a1a;
+    font-family: 'Press Start 2P', monospace;
+    color: black;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    image-rendering: pixelated;
+    transition: all 0.1s ease-in-out;
+}
+
+.retro-input:focus {
+    outline: none;
+    background-color: #fff7a8;
+    border-color: #3a3a3a;
+    box-shadow: 2px 2px 0px #1a1a1a, 4px 4px 0px #000000;
+}
+
+.btn-retro {
+    width: 200px;
+    height: 50px;
+    background-color: whitesmoke;
+    border: 4px solid #646363;
+    box-shadow: 4px 4px 0px #3a3a3a, 8px 8px 0px #1a1a1a;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: black;
+    transition: all 0.1s ease-in-out;
+    border-radius: 5px;
+    padding: 6px 12px;
+    margin-top: 20px;
+}
+
+.btn-retro {
+    font-size: 12px;
+}
+
+.btn-retro:hover {
+    transform: translateY(-4px);
+    background-color: whitesmoke;
+    border-color: #3a3a3a;
+    box-shadow: 4px 4px 0px #1a1a1a, 8px 8px 0px #000000;
+}
+
+.btn-retro:active {
+    transform: translateY(2px);
+    background-color: #dfdede;
+    border-color: #2a2a2a;
+    box-shadow: 2px 2px 0px #1a1a1a, 4px 4px 0px #000000;
+}
+
+.register-callout {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    color: black;
+    margin-top: 20px;
+    line-height: 1.8;
+}
+
+.register-callout a {
+    color: black;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.register-callout a:hover {
+    color: white;
+}
+
+.register-text {
+    color: black;
+    text-transform: uppercase;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+}
+
+.register-text:hover {
+    color: white;
+}
+
+.retro-input::placeholder {
+    font-size: 12px;
+}
+
+/* Responsive-styles: MOBILE */
+@media only screen and (max-width: 600px) {
+
+    .form-box {
+        width: 100%;
+    }
+
+    .login-register-container {
+        flex-direction: column-reverse;
+        gap: 50px;
+        margin: 0 10px 20px 0;
+    }
+
+    .login-image {
+        bottom: 60px;
+        margin-top: 20px;
+    }
+
+}
+
+
+/* Responsive-styles: TABLET */
+@media (min-width: 601px) and (max-width: 1024px) {
+
+    .login-image {
+        bottom: 100px;
+    }
+
+}
+
+
+/* ========== LOGIN ========== */
+
+.cat-image {
+    position: absolute;
+    width: 130px;
+    height: auto;
+    bottom: 40px;
+    right: 200px;
+}
+
+.cat-image-2 {
+    position: absolute;
+    width: 150px;
+    height: auto;
+    bottom: 5px;
+    right: 350px;
+}
+
+
+
+/* Responsive-styles: MOBILE */
+@media only screen and (max-width: 600px) {
+
+    .cat-image {
+        bottom: 100px;
+        right: 20px;
+    }
+
+    .cat-image-2 {
+        bottom: 68px;
+        right: 157px;
+    }
+
 }
 
