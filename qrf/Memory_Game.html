@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALANGLIS - Memory Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="./css/styles.css">
+
+</head>
+
+<body>
+    <div class="container text-center">
+        <!--Logo area-->
+        <div class="valanglis-logo-container">
+            <a href="index.html">
+                <img class="valanglis-logo" src="./images/valanglis-logo-2.png" alt="valanglis-logo">
+            </a>
+        </div>
+
+        <!--Difficulty selection area-->
+        <div id="difficulty-selector" class="mt-4">
+            <label for="difficulty">level:</label>
+            <select id="difficulty">
+                <option value="easy">easy</option>
+                <option value="medium" selected>medium</option>
+                <option value="hard">hard</option>
+            </select>
+            <button id="start-game" class="btn btn-primary">GO</button>
+        </div>
+
+        <!--Game are-->
+        <div class="game-container">
+            <h2 class="mt-4">Memory Game</h2>
+            <div id="game-board"></div>
+            <!--   <p>Move: <span id="moves">0</span></p>
+            <p>Score: <span id="score">0</span></p> -->
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="./javascript/footer.js"></script>
+    <script>
+        const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let hasFlippedCard = false;
+
+        function generateDeck(numPairs) {
+            const selectedSymbols = SYMBOLS.slice(0, numPairs);
+            const deck = [...selectedSymbols, ...selectedSymbols];
+            return shuffle(deck);
+        }
+
+        function shuffle(arry) {
+            for (let i = arry.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arry[i], arry[j]] = [arry[j], arry[i]];
+            }
+            return arry;
+        }
+        function createCard(symbol) {
+            const card = document.createElement('div');
+            card.classList.add('memory-card');
+
+            const cardFront = document.createElement('div');
+            cardFront.classList.add('card-front');
+            cardFront.textContent = " ";
+
+            const cardBack = document.createElement('div');
+            cardBack.classList.add('card-back');
+            cardBack.textContent = symbol;
+
+            card.appendChild(cardFront);
+            card.appendChild(cardBack);
+
+            card.dataset.symbol = symbol;
+            card.addEventListener('click', flipCard);
+            return card;
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flip');
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            const isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            resetBoard();
+            checkGameOver();   // test gameover
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flip');
+                secondCard.classList.remove('flip');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard] = [null, null];
+            lockBoard = false;
+            hasFlippedCard = false;
+        }
+
+        function initGame(numPairs) {
+            const deck = generateDeck(numPairs);
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = '';  //clear old gameworld
+
+            deck.forEach(symbol => {
+                const card = createCard(symbol);
+                document.getElementById('game-board').appendChild(card);
+            });
+        }
+
+        document.getElementById('start-game').addEventListener('click', () => {
+            const difficulty = document.getElementById('difficulty').value;
+            let numPairs;
+
+            if (difficulty === 'easy') {
+                numPairs = 2;
+            } else if (difficulty === 'medium') {
+                numPairs = 12;
+            } else if (difficulty === 'hard') {
+                numPairs = 16;
+            }
+
+            initGame(numPairs);
+
+            // Show the game area and hide the difficulty selection area
+            document.querySelector('.game-container').style.display = 'block';
+            document.getElementById('difficulty-selector').style.display = 'none';
+        });
+
+    function checkGameOver() {
+        const cards = document.querySelectorAll('.memory-card');
+        const gameOver = Array.from(cards).every(card => card.classList.contains("flip"));
+        if (gameOver) {
+            showGameOverOverlay();
+        }
+    }
+
+    function showGameOverOverlay() {
+        const overlay = document.createElement("div");
+        overlay.classList.add('game-over-overlay');
+        overlay.innerHTML = `
+            <h2>Perfect!</h2>
+            <p>Congratulations, you matched all cards.</p>
+            <button id="restart-game" class="btn btn-primary">Restart Game</button>
+            `;
+            document.body.appendChild(overlay);
+
+            document.getElementById('restart-game').addEventListener('click', ()=> {
+                location.reload();
+            });
+    }
+    </script>
+</body>
+
+</html>
