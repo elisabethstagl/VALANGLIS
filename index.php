@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 
+<?php
+    include 'initial.php';
+?>
 <body>
 
     <div class="container text-center">
@@ -33,12 +36,13 @@
         </div>
     </div>
 
-    <img src="./images/bee.png"  class="bee-image" alt="bee-image">
+    <img src="./images/bee.png" class="bee-image" alt="bee-image">
 
     <div id="footer"></div>
 
+    <script src="./javascript/header-footer-loading.js"></script>
 </body>
 
-<script src="./javascript/header-footer-loading.js"></script>
+
 
 </html>
