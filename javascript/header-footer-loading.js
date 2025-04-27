@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $("#footer").load("footer.html #footerLoad");
-    $("#header").load("header.html #headerLoad");
+    $("#header").load("header.php #headerLoad");
 });
 
 document.addEventListener("mousemove", function (e) {
