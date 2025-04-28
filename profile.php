@@ -7,66 +7,114 @@ if (!$loggedIn) {
     exit();
 }
 
+$errUsername = $errEmail = $errPassword = $successMsg = "";
+
 // Profil updaten
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update-profile"])) {
     $newUsername = trim($_POST["username"]) ?? "";
     $newEmail = trim($_POST["email"]) ?? "";
 
-    $errMsg = "";
-
-    if (empty($newUsername) || !preg_match("/^[a-zA-Z0-9-.]*$/", $newUsername)) {
-        $errMsg = "Invalid username.";
-    }
-
-    if (empty($newEmail) || !filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
-        $errMsg = "Invalid email address.";
-    }
-
-    if (empty($errMsg)) {
-        $update_sql = "UPDATE users SET username = ?, email = ? WHERE id = ?";
-        $stmt = $db->prepare($update_sql);
-        $stmt->bind_param("ssi", $newUsername, $newEmail, $id);
-
-        if ($stmt->execute()) {
-            $_SESSION["username"] = $newUsername;
-            $_SESSION["email"] = $newEmail;
-            $username = $newUsername;
-            $email = $newEmail;
-            $successMsg = "Profile updated successfully!";
-        } else {
-            $errMsg = "Error updating profile: " . $stmt->error;
+    if ($username != $newUsername) {
+        if (empty($newUsername) || !preg_match("/^[a-zA-Z0-9-.]*$/", $newUsername)) {
+            $errUsername = "Invalid username.";
+        }
+        else {
+            $check_sql = "SELECT id FROM users WHERE username = ? AND id != ?";
+            $stmt = $db->prepare($check_sql);
+            $stmt->bind_param("si", $newUsername, $id);
+            $stmt->execute();
+            $stmt->store_result(); 
+    
+            if ($stmt->num_rows > 0) 
+                $errUsername = "This username is taken.";
+    
+            $stmt->close(); 
         }
 
-        $stmt->close();
+        if (empty($errUsername)) {
+            $update_sql = "UPDATE users SET username = ? WHERE id = ?";
+            $stmt = $db->prepare($update_sql);
+            $stmt->bind_param("si", $newUsername, $id);
+    
+            if ($stmt->execute()) {
+                $_SESSION["username"] = $newUsername;
+                $username = $newUsername;
+                $successMsg = "Profile updated successfully!";
+            } else {
+                $errUsername = "Error updating profile: " . $stmt->error;
+            }
+            $stmt->close();
+        }
     }
+
+    if ($email != $newEmail) {
+        if (empty($newEmail) || !filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+            $errEmail = "Invalid email address.";
+        }
+        else {
+            $check_sql = "SELECT id FROM users WHERE email = ? AND id != ?";
+            $stmt = $db->prepare($check_sql);
+            $stmt->bind_param("si", $newEmail, $id);
+            $stmt->execute();
+            $stmt->store_result(); 
+    
+            if ($stmt->num_rows > 0) 
+                $errEmail = "This email address is already registered.";
+    
+            $stmt->close(); 
+        }
+
+        if (empty($errEmail)) {
+            $update_sql = "UPDATE users SET email = ? WHERE id = ?";
+            $stmt = $db->prepare($update_sql);
+            $stmt->bind_param("si", $newEmail, $id);
+    
+            if ($stmt->execute()) {
+                $_SESSION["email"] = $newEmail;
+                $email = $newEmail;
+                $successMsg = "Profile updated successfully!";
+            } else {
+                $errEmail = "Error updating profile: " . $stmt->error;
+            }
+    
+            $stmt->close();
+        }
+    }
+
 
     // Passwort ändern (nur wenn ausgefüllt)
     if (!empty($_POST["current_password"]) && !empty($_POST["new_password"])) {
         $currentPassword = $_POST["current_password"];
         $newPassword = $_POST["new_password"];
 
-        $getPasswordSql = "SELECT password_hash FROM users WHERE id = ?";
-        $stmt = $db->prepare($getPasswordSql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $stmt->bind_result($passwordHash);
-        $stmt->fetch();
-        $stmt->close();
-
-        if (password_verify($currentPassword, $passwordHash)) {
-            $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-            $updatePasswordSql = "UPDATE users SET password_hash = ? WHERE id = ?";
-            $stmt = $db->prepare($updatePasswordSql);
-            $stmt->bind_param("si", $newPasswordHash, $id);
-
-            if ($stmt->execute()) {
-                $successMsg = "Password updated successfully!";
-            } else {
-                $errMsg = "Error updating password: " . $stmt->error;
-            }
+        if (strlen($newPassword) < 4) {
+            $errPassword = "Password must at least have 4 characters.";
+        }
+        else {
+            $getPasswordSql = "SELECT password_hash FROM users WHERE id = ?";
+            $stmt = $db->prepare($getPasswordSql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->bind_result($passwordHash);
+            $stmt->fetch();
             $stmt->close();
-        } else {
-            $errMsg = "Current password is incorrect.";
+    
+            if (password_verify($currentPassword, $passwordHash)) {
+                $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+                $updatePasswordSql = "UPDATE users SET password_hash = ? WHERE id = ?";
+                $stmt = $db->prepare($updatePasswordSql);
+                $stmt->bind_param("si", $newPasswordHash, $id);
+    
+                if ($stmt->execute()) {
+                    $successMsg = "Password updated successfully!";
+                } else {
+                    $errPassword = "Error updating password: " . $stmt->error;
+                }
+                $stmt->close();
+            }
+            else {
+                $errPassword = "Current password is incorrect.";
+            }
         }
     }
 }
@@ -111,13 +159,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete-profile"])) {
         <div class="d-flex justify-content-start align-items-center">
             <div class="form-box">
                 <h4 style="text-align: left;">My Profile</h4>
-
-                <?php if (!empty($errMsg)): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($errMsg) ?></div>
-                <?php elseif (!empty($successMsg)): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($successMsg) ?></div>
-                <?php endif; ?>
-
+                <?php
+                    if (!empty($errUsername)) {
+                ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($errUsername) ?></div>
+                <?php
+                    }
+                    if (!empty($errEmail)) {
+                ?>
+                        <div class="alert alert-success"><?= htmlspecialchars($errEmail) ?></div>
+                <?php
+                    }
+                    if (!empty($errPassword)) {
+                ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($errPassword) ?></div>
+                <?php
+                    }
+                    if (!empty($successMsg)) {
+                ?>
+                        <div class="alert alert-success"><?= htmlspecialchars($successMsg) ?></div>
+                <?php
+                    }
+                ?>
                 <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="profileForm">
                     <div class="row">
                         <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">

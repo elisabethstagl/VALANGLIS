@@ -23,12 +23,12 @@
             $stmt->execute();
             $stmt->store_result(); 
             if ($stmt->num_rows > 0) 
-                $errUsername = "This username is taken";
+                $errUsername = "This username is taken.";
             $stmt->close(); 
         }
 
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errEmail = "Email address is missing or wrong";
+            $errEmail = "Email address is missing or wrong.";
         } else {
             $check_sql = "SELECT `id` FROM `users` WHERE `email` = ?";
             $stmt = $db->prepare($check_sql);
@@ -36,14 +36,14 @@
             $stmt->execute();
             $stmt->store_result(); 
             if ($stmt->num_rows > 0) 
-                $errEmail = "This email address is already registered";
+                $errEmail = "This email address is already registered.";
             $stmt->close(); 
         }
 
         if ($password != $passwordRepeat) {
             $errPassword = "Passwords don't match";
         } else if (strlen($password) < 4) {
-            $errPassword = "Password must at least have 4 characters";
+            $errPassword = "Password must at least have 4 characters.";
         }
 
         if (empty($errUsername) && empty($errEmail) && empty($errPassword)) {
