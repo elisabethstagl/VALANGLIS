@@ -16,8 +16,9 @@
 </head>
 
 <?php
-    include 'initial.php';
+include 'initial.php';
 ?>
+
 <body>
 
     <div class="container text-center">
@@ -25,16 +26,23 @@
         <div id="header"></div>
 
         <div class="row games-container">
-            <div class="col-md-4 col-sm-12 game-div">
-                Memory
+            <div class="col-md-4 col-sm-12">
+                <a href="#" class="game-link">
+                    <div class="game-div">Memory</div>
+                </a>
             </div>
-            <div class="col-md-4 col-sm-12 game-div">
-                Snake
+            <div class="col-md-4 col-sm-12">
+                <a href="#" class="game-link">
+                    <div class="game-div">Snake</div>
+                </a>
             </div>
-            <div class="col-md-4 col-sm-12 game-div">
-                Ping-Pong
+            <div class="col-md-4 col-sm-12">
+                <a href="#" class="game-link">
+                    <div class="game-div">Ping-Pong</div>
+                </a>
             </div>
         </div>
+
     </div>
 
     <img src="./images/bee.png" class="bee-image" alt="bee-image">
