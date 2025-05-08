@@ -358,7 +358,7 @@ footer {
 }
 
 
-/* ========== LOGIN ========== */
+/* ========== REGISTER ========== */
 
 .cat-image {
     position: absolute;
@@ -391,10 +391,6 @@ footer {
         right: 157px;
     }
 
-    .toggle-login{
-        right: 55px !important;
-    }
-
 }
 
 
@@ -415,28 +411,32 @@ footer {
     justify-content: space-around;
 }
 
-.input-wrapper {
-    position: relative;
-    width: 100%;
+.input-wrapper .retro-input {
+    padding-right: 40px;
+    box-sizing: border-box;
 }
 
-.input-wrapper .retro-input {
-    padding-right: 40px; 
+.input-wrapper {
+    position: relative;
+    width: fit-content;
+}
+
+.retro-input {
+    width: 280px;
+    padding-right: 40px;
     box-sizing: border-box;
 }
 
 .toggle-password {
     position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
     cursor: pointer;
-    font-size: 20px;
     z-index: 2;
-    color: #333;
-    opacity: 0.7;
+    opacity: 0.8;
     transition: opacity 0.3s ease;
 }
 
@@ -444,6 +444,9 @@ footer {
     opacity: 1;
 }
 
+.btn-container-save-del {
+    gap: 30px;
+}
 
 
 /* Responsive-styles: MOBILE */
@@ -452,10 +455,17 @@ footer {
 
     .btn-container-save-del {
         flex-direction: column;
+        margin-bottom: 80px;
+        gap: 20px;
     }
 
+    .profile-delete-btn {
+        margin-top: 0;
+    }
+    
+
     .toggle-password {
-        right: 85px;
+        right: 12px;
     }
 
 }

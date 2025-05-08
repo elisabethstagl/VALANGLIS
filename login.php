@@ -74,10 +74,15 @@ if (isset($_POST["login"])) {
 
                             <label for="password" class="small-label mt-3">Password</label>
                             <div class="position-relative">
-                                <input type="password" id="password" name="password" class="retro-input pr-5" required>
-                                <img src="./icons/eye.svg" class="toggle-password toggle-login" data-toggle="#password"
-                                    alt="Toggle Password">
+                                <div class="input-wrapper">
+                                    <input type="password" id="password" name="password" class="retro-input" required>
+                                    <img src="./icons/eye.svg" class="toggle-password" data-toggle="#password"
+                                        alt="Toggle Password">
+                                </div>
                             </div>
+
+
+
 
                             <div class="mt-4">
                                 <button type="submit" class="btn-retro" name="login">Login</button>

@@ -154,7 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete-profile"])) {
                         </div>
                     </div>
 
-                    <div class="d-flex gap-4 btn-container-save-del">
+                    <div class="d-flex btn-container-save-del">
                         <button type="submit" class="btn-retro" name="update-profile">Save changes</button>
                         <button type="button" class="btn-retro profile-delete-btn" id="deleteProfileBtn">Delete
                             profile</button>
