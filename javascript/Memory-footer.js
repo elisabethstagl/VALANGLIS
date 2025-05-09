@@ -1,4 +1,4 @@
-const SYMBOLS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯'];
+const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
@@ -14,11 +14,9 @@ let isTimerPaused = false;
 
 function getNumParisForLevel(level) {
     const levelPairs = {
-        1: 2,
-        2: 4,
-        3: 6,
-        4: 8,
-        5: 10,
+        1: 5,
+        2: 8,
+        3: 10,
     };
     return levelPairs[level] || 3;
 }
@@ -91,8 +89,12 @@ function disableCards() {
     firstCard.removeEventListener('click', flipCard);
     secondCard.removeEventListener('click', flipCard);
     resetBoard();
-    checkGameOver();
+
+    setTimeout(() => {
+        checkGameOver();
+    }, 600);
 }
+
 
 function unflipCards() {
     lockBoard = true;
