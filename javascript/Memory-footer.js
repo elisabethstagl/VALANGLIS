@@ -1,8 +1,40 @@
-const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
 let hasFlippedCard = false;
+
+let currentLevel = 1;
+const maxLevel = 5;
+
+let startTime;
+let elapsedBeforePause = 0;
+let animationFrameId;
+let isTimerPaused = false;
+
+let levelStartTime;       
+let levelElapsedTime = 0;  
+
+function getNumParisForLevel(level) {
+    const levelPairs = {
+        1: 5,
+        2: 8,
+        3: 10,
+    };
+    return levelPairs[level] || 3;
+}
+
+function startLevel(level) {
+    const numPairs = getNumParisForLevel(level);
+    initGame(numPairs);
+    updateLevelDisplay(level);
+
+    document.querySelector('.game-container').style.display = 'block';
+    document.getElementById('difficulty-selector').style.display = 'none';
+
+    startTime = performance.now();
+    levelStartTime = performance.now();
+}
 
 function generateDeck(numPairs) {
     const selectedSymbols = SYMBOLS.slice(0, numPairs);
@@ -17,6 +49,7 @@ function shuffle(arry) {
     }
     return arry;
 }
+
 function createCard(symbol) {
     const card = document.createElement('div');
     card.classList.add('memory-card');
@@ -62,8 +95,12 @@ function disableCards() {
     firstCard.removeEventListener('click', flipCard);
     secondCard.removeEventListener('click', flipCard);
     resetBoard();
-    checkGameOver();   // test gameover
+
+    setTimeout(() => {
+        checkGameOver();
+    }, 600);
 }
+
 
 function unflipCards() {
     lockBoard = true;
@@ -83,52 +120,113 @@ function resetBoard() {
 function initGame(numPairs) {
     const deck = generateDeck(numPairs);
     const gameBoard = document.getElementById('game-board');
-    gameBoard.innerHTML = '';  //clear old gameworld
+    gameBoard.innerHTML = '';
 
     deck.forEach(symbol => {
         const card = createCard(symbol);
-        document.getElementById('game-board').appendChild(card);
+        gameBoard.appendChild(card);
     });
 }
 
 document.getElementById('start-game').addEventListener('click', () => {
-    const difficulty = document.getElementById('difficulty').value;
-    let numPairs;
+    currentLevel = 1;
+    elapsedBeforePause = 0;
+    startTime = performance.now();
+    isTimerPaused = false;
 
-    if (difficulty === 'easy') {
-        numPairs = 6;
-    } else if (difficulty === 'medium') {
-        numPairs = 12;
-    } else if (difficulty === 'hard') {
-        numPairs = 16;
-    }
-
-    initGame(numPairs);
-
-    // Show the game area and hide the difficulty selection area
-    document.querySelector('.game-container').style.display = 'block';
-    document.getElementById('difficulty-selector').style.display = 'none';
+    startLevel(currentLevel);
+    updateTimer();
 });
 
 function checkGameOver() {
-const cards = document.querySelectorAll('.memory-card');
-const gameOver = Array.from(cards).every(card => card.classList.contains("flip"));
-if (gameOver) {
-    showGameOverOverlay();
-}
+    const cards = document.querySelectorAll('.memory-card');
+    const gameOver = Array.from(cards).every(card => card.classList.contains("flip"));
+
+    if (gameOver) {
+        if (currentLevel < maxLevel) {
+            showLevelOverlay(currentLevel, currentLevel + 1);
+            currentLevel++;
+        } else {
+            showFinalVictoryOverlay();
+        }
+    }
 }
 
-function showGameOverOverlay() {
-const overlay = document.createElement("div");
-overlay.classList.add('game-over-overlay');
-overlay.innerHTML = `
-    <h2>Perfect!</h2>
-    <p>Congratulations, you matched all cards.</p>
-    <button id="restart-game" class="btn btn-primary">Restart Game</button>
+function showFinalVictoryOverlay() {
+    cancelAnimationFrame(animationFrameId);
+    if (!isTimerPaused) {
+        elapsedBeforePause += performance.now() - startTime;
+    }
+
+    const totalSeconds = (elapsedBeforePause / 1000).toFixed(1);
+
+    const overlay = document.createElement("div");
+    overlay.classList.add('game-over-overlay');
+    overlay.innerHTML = `
+        <h2>You Win!</h2>
+        <p>Congratulations, you completed all levels!</p>
+        <p>Total Time: ${totalSeconds}s</p>
+        <button id="restart-game" class="btn btn-primary">Restart Game</button>
     `;
     document.body.appendChild(overlay);
 
-    document.getElementById('restart-game').addEventListener('click', ()=> {
+    document.getElementById('restart-game').addEventListener('click', () => {
         location.reload();
     });
+}
+
+function showLevelOverlay(current, next) {
+    // Pause globalen Timer 
+    isTimerPaused = true;
+    elapsedBeforePause += performance.now() - startTime;
+
+    // Stoppe Level-Timer
+    levelElapsedTime = performance.now() - levelStartTime;
+
+    const overlay = document.createElement("div");
+    overlay.classList.add('game-over-overlay');
+    overlay.innerHTML = `
+        <h2>Level ${current} Completed!</h2>
+        <p>Level Time: ${(levelElapsedTime / 1000). toFixed(1)}s</p>
+        <p>Get ready for Level ${next}!</p>
+        <button id="next-level-btn" class="btn btn-primary">Next Level</button>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById('next-level-btn').addEventListener('click', () => {
+        overlay.remove();
+
+        //retry 
+        levelElapsedTime = 0;
+        elapsedBeforePause = 0;
+        startTime = performance.now();
+        levelStartTime = performance.now();
+        isTimerPaused = false;
+        
+        startLevel(next);
+        updateTimer();
+    });
+}
+
+function updateLevelDisplay(level) {
+    const levelDisplay = document.getElementById('level-display');
+    if (levelDisplay) {
+        levelDisplay.textContent = `Level ${level}`;
+    }
+}
+
+function updateTimer() {
+    const timerElement = document.getElementById('timer');
+
+    function tick() {
+        if (!isTimerPaused) {
+            const now = performance.now();
+            const seconds = ((elapsedBeforePause + (now - startTime)) / 1000).toFixed(1);
+            timerElement.textContent = `Time: ${seconds}s`;
+        }
+        animationFrameId = requestAnimationFrame(tick);
+    }
+
+    cancelAnimationFrame(animationFrameId);
+    tick();
 }
