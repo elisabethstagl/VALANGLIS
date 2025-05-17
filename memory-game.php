@@ -16,35 +16,34 @@
 </head>
 
 <body>
-    <div id="header"></div>
+
     <div class="container text-center">
-        <!--Logo area-->
-        <div class="valanglis-logo-container">
-            <a href="index.html">
-                <img class="valanglis-logo" src="./images/valanglis-logo-2.png" alt="valanglis-logo">
-            </a>
-        </div>
-
-
-        <!--Difficulty selection area-->
-        <div id="difficulty-selector" class="my-4">
-            <button id="start-game" class="btn btn-primary">Start Game</button>
-        </div>
+        <div id="header"></div>
 
         <!--Game are-->
         <div class="game-container">
-            <h2 class="mt-4">Memory Game</h2>
+            <h2 class="">Memory</h2>
 
-            <div id="level-and-timer" class="mt-3">
-                <span id="level-display">Level 1</span> |
-                <span id="timer">Time: 0s</span>
+            <div id="start-game-button">
+                <button id="start-game" class="btn-retro">Start Game</button>
+            </div>
+
+            <div id="level-and-timer-wrapper">
+                <div id="level-and-timer">
+                    <span id="level-display">Level 1</span> |
+                    <span id="timer">Time: 0.0s</span>
+                </div>
+                <div id="level-selector" class="level-selector"></div>
             </div>
 
             <div id="game-board"></div>
         </div>
+
     </div>
 
     <div id="footer"></div>
+
+    <script src="./javascript/header-footer-loading.js"></script>
     <script src="./javascript/memory-game.js"></script>
 </body>
 

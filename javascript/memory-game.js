@@ -1,4 +1,3 @@
-const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
@@ -7,66 +6,75 @@ let hasFlippedCard = false;
 let currentLevel = 1;
 const maxLevel = 5;
 
-let startTime;
-let elapsedBeforePause = 0;
+let levelStartTime;
 let animationFrameId;
 let isTimerPaused = false;
 
+const IMAGE_SYMBOLS = [
+    'among-us', 'beer', 'cake', 'camera', 'car', 'castle', 'cat-4', 'chicken',
+    'coke', 'disc', 'earth', 'grapes', 'heart', 'light-bulb', 'pizza',
+    'soup', 'yoda', 'yoshi', 'sushi', 'strawberry-cake'
+];
+
 function getNumParisForLevel(level) {
     const levelPairs = {
-        1: 5,
-        2: 8,
-        3: 10,
+        1: 8,
+        2: 12,
+        3: 12,
+        4: 16,
+        5: 20
     };
-    return levelPairs[level] || 3;
+    return levelPairs[level] || 5;
 }
 
-function startLevel(level) {
-    const numPairs = getNumParisForLevel(level);
-    initGame(numPairs);
-    updateLevelDisplay(level);
-
-    document.querySelector('.game-container').style.display = 'block';
-    document.getElementById('difficulty-selector').style.display = 'none';
+function generateSymbols(numPairs) {
+    return IMAGE_SYMBOLS.slice(0, numPairs);
 }
 
 function generateDeck(numPairs) {
-    const selectedSymbols = SYMBOLS.slice(0, numPairs);
+    const selectedSymbols = generateSymbols(numPairs);
     const deck = [...selectedSymbols, ...selectedSymbols];
     return shuffle(deck);
 }
 
-function shuffle(arry) {
-    for (let i = arry.length - 1; i > 0; i--) {
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arry[i], arry[j]] = [arry[j], arry[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return arry;
+    return arr;
 }
 
 function createCard(symbol) {
     const card = document.createElement('div');
     card.classList.add('memory-card');
+    card.dataset.symbol = symbol;
 
     const cardFront = document.createElement('div');
     cardFront.classList.add('card-front');
-    cardFront.textContent = " ";
+    const frontImg = document.createElement('img');
+    frontImg.src = './images/memory/card-bg.png';
+    frontImg.alt = 'Card Back';
+    frontImg.classList.add('card-img');
+    cardFront.appendChild(frontImg);
 
     const cardBack = document.createElement('div');
     cardBack.classList.add('card-back');
-    cardBack.textContent = symbol;
+    const backImg = document.createElement('img');
+    backImg.src = `./images/memory/${symbol}.png`;
+    backImg.alt = symbol;
+    backImg.classList.add('card-img');
+    cardBack.appendChild(backImg);
 
     card.appendChild(cardFront);
     card.appendChild(cardBack);
-
-    card.dataset.symbol = symbol;
     card.addEventListener('click', flipCard);
+
     return card;
 }
 
 function flipCard() {
-    if (lockBoard) return;
-    if (this === firstCard) return;
+    if (lockBoard || this === firstCard) return;
 
     this.classList.add('flip');
 
@@ -95,7 +103,6 @@ function disableCards() {
     }, 600);
 }
 
-
 function unflipCards() {
     lockBoard = true;
     setTimeout(() => {
@@ -113,8 +120,18 @@ function resetBoard() {
 
 function initGame(numPairs) {
     const deck = generateDeck(numPairs);
+    const totalCards = deck.length;
     const gameBoard = document.getElementById('game-board');
     gameBoard.innerHTML = '';
+
+    let columns = 8;
+    for (let i = 8; i >= 1; i--) {
+        if (totalCards % i === 0) {
+            columns = i;
+            break;
+        }
+    }
+    gameBoard.style.gridTemplateColumns = `repeat(${columns}, auto)`;
 
     deck.forEach(symbol => {
         const card = createCard(symbol);
@@ -123,14 +140,26 @@ function initGame(numPairs) {
 }
 
 document.getElementById('start-game').addEventListener('click', () => {
-    currentLevel = 1;
-    elapsedBeforePause = 0;
-    startTime = performance.now();
-    isTimerPaused = false;
+    const savedLevel = parseInt(sessionStorage.getItem('memory-last-level')) || 1;
+    currentLevel = savedLevel;
 
     startLevel(currentLevel);
-    updateTimer();
+    renderLevelSelector();
 });
+
+function startLevel(level) {
+    const numPairs = getNumParisForLevel(level);
+    initGame(numPairs);
+    updateLevelDisplay(level);
+
+    document.querySelector('.game-container').style.display = 'block';
+    document.getElementById('start-game-button').style.display = 'none';
+    document.getElementById('level-and-timer').style.display = 'block';
+
+    levelStartTime = performance.now();
+    isTimerPaused = false;
+    updateTimer();
+}
 
 function checkGameOver() {
     const cards = document.querySelectorAll('.memory-card');
@@ -139,7 +168,6 @@ function checkGameOver() {
     if (gameOver) {
         if (currentLevel < maxLevel) {
             showLevelOverlay(currentLevel, currentLevel + 1);
-            currentLevel++;
         } else {
             showFinalVictoryOverlay();
         }
@@ -148,46 +176,69 @@ function checkGameOver() {
 
 function showFinalVictoryOverlay() {
     cancelAnimationFrame(animationFrameId);
-    if (!isTimerPaused) {
-        elapsedBeforePause += performance.now() - startTime;
-    }
+    isTimerPaused = true;
 
-    const totalSeconds = (elapsedBeforePause / 1000).toFixed(1);
+    const now = performance.now();
+    const levelSeconds = ((now - levelStartTime) / 1000).toFixed(1);
+
+    sessionStorage.setItem('memory-last-level', maxLevel);
+    sessionStorage.setItem('memory-max-level', maxLevel);
 
     const overlay = document.createElement("div");
     overlay.classList.add('game-over-overlay');
     overlay.innerHTML = `
         <h2>You Win!</h2>
         <p>Congratulations, you completed all levels!</p>
-        <p>Total Time: ${totalSeconds}s</p>
-        <button id="restart-game" class="btn btn-primary">Restart Game</button>
+        <p>Last Level Time: ${levelSeconds}s</p>
+        <div class="button-group">
+            <button id="home-btn" class="btn-retro">Back to Home</button>
+            <button id="restart-game" class="btn-retro">Restart Game</button>
+        </div>
     `;
     document.body.appendChild(overlay);
 
+    document.getElementById('home-btn').addEventListener('click', () => {
+        window.location.href = 'index.php';
+    });
+
     document.getElementById('restart-game').addEventListener('click', () => {
+        sessionStorage.removeItem('memory-last-level');
+        sessionStorage.removeItem('memory-max-level');
         location.reload();
     });
 }
 
 function showLevelOverlay(current, next) {
-    // Pause timer
     isTimerPaused = true;
-    elapsedBeforePause += performance.now() - startTime;
+
+    const now = performance.now();
+    const levelElapsedTime = now - levelStartTime;
+    const levelSeconds = (levelElapsedTime / 1000).toFixed(1);
+
+    sessionStorage.setItem('memory-last-level', next);
+
+    const previousMax = parseInt(sessionStorage.getItem('memory-max-level')) || 1;
+    if (next > previousMax) {
+        sessionStorage.setItem('memory-max-level', next);
+    }
 
     const overlay = document.createElement("div");
     overlay.classList.add('game-over-overlay');
     overlay.innerHTML = `
         <h2>Level ${current} Completed!</h2>
+        <p>You completed this level in ${levelSeconds}s</p>
         <p>Get ready for Level ${next}!</p>
-        <button id="next-level-btn" class="btn btn-primary">Next Level</button>
+        <button id="next-level-btn" class="btn-retro">Next Level</button>
     `;
     document.body.appendChild(overlay);
 
     document.getElementById('next-level-btn').addEventListener('click', () => {
         overlay.remove();
-        startTime = performance.now();
+        levelStartTime = performance.now();
         isTimerPaused = false;
+        currentLevel = next;
         startLevel(next);
+        renderLevelSelector();
     });
 }
 
@@ -204,7 +255,7 @@ function updateTimer() {
     function tick() {
         if (!isTimerPaused) {
             const now = performance.now();
-            const seconds = ((elapsedBeforePause + (now - startTime)) / 1000).toFixed(1);
+            const seconds = ((now - levelStartTime) / 1000).toFixed(1);
             timerElement.textContent = `Time: ${seconds}s`;
         }
         animationFrameId = requestAnimationFrame(tick);
@@ -212,4 +263,30 @@ function updateTimer() {
 
     cancelAnimationFrame(animationFrameId);
     tick();
+}
+
+function renderLevelSelector() {
+    const container = document.getElementById('level-selector');
+    if (!container) return;
+
+    const maxUnlocked = parseInt(sessionStorage.getItem('memory-max-level')) || 1;
+    container.innerHTML = '';
+
+    for (let i = 1; i <= maxLevel; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = `Lvl ${i}`;
+        btn.classList.add('level-button');
+        if (i <= maxUnlocked) {
+            btn.disabled = false;
+            btn.addEventListener('click', () => {
+                currentLevel = i;
+                startLevel(i);
+                renderLevelSelector();
+            });
+        } else {
+            btn.disabled = true;
+            btn.classList.add('locked');
+        }
+        container.appendChild(btn);
+    }
 }
