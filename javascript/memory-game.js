@@ -12,9 +12,6 @@ let elapsedBeforePause = 0;
 let animationFrameId;
 let isTimerPaused = false;
 
-let levelStartTime;       
-let levelElapsedTime = 0;  
-
 function getNumParisForLevel(level) {
     const levelPairs = {
         1: 5,
@@ -31,9 +28,6 @@ function startLevel(level) {
 
     document.querySelector('.game-container').style.display = 'block';
     document.getElementById('difficulty-selector').style.display = 'none';
-
-    startTime = performance.now();
-    levelStartTime = performance.now();
 }
 
 function generateDeck(numPairs) {
@@ -176,18 +170,14 @@ function showFinalVictoryOverlay() {
 }
 
 function showLevelOverlay(current, next) {
-    // Pause globalen Timer 
+    // Pause timer
     isTimerPaused = true;
     elapsedBeforePause += performance.now() - startTime;
-
-    // Stoppe Level-Timer
-    levelElapsedTime = performance.now() - levelStartTime;
 
     const overlay = document.createElement("div");
     overlay.classList.add('game-over-overlay');
     overlay.innerHTML = `
         <h2>Level ${current} Completed!</h2>
-        <p>Level Time: ${(levelElapsedTime / 1000). toFixed(1)}s</p>
         <p>Get ready for Level ${next}!</p>
         <button id="next-level-btn" class="btn btn-primary">Next Level</button>
     `;
@@ -195,16 +185,9 @@ function showLevelOverlay(current, next) {
 
     document.getElementById('next-level-btn').addEventListener('click', () => {
         overlay.remove();
-
-        //retry 
-        levelElapsedTime = 0;
-        elapsedBeforePause = 0;
         startTime = performance.now();
-        levelStartTime = performance.now();
         isTimerPaused = false;
-        
         startLevel(next);
-        updateTimer();
     });
 }
 
