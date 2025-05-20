@@ -13,7 +13,7 @@ let isTimerPaused = false;
 const IMAGE_SYMBOLS = [
     'among-us', 'beer', 'cake', 'camera', 'car', 'castle', 'cat-4', 'chicken',
     'coke', 'disc', 'earth', 'grapes', 'heart', 'light-bulb', 'pizza',
-    'soup', 'yoda', 'yoshi', 'sushi', 'strawberry-cake'
+    'soup', 'yoda', 'yoshi', 'sushi', 'strawberry-cake', 'skull'
 ];
 
 function getNumParisForLevel(level) {
@@ -28,11 +28,21 @@ function getNumParisForLevel(level) {
 }
 
 function generateSymbols(numPairs) {
-    return IMAGE_SYMBOLS.slice(0, numPairs);
+    const symbolsWithoutSkull = IMAGE_SYMBOLS.filter(sym => sym !== 'skull');
+    return symbolsWithoutSkull.slice(0, numPairs);
 }
 
-function generateDeck(numPairs) {
-    const selectedSymbols = generateSymbols(numPairs);
+function generateDeck(numPairs, level) {
+    let selectedSymbols = generateSymbols(numPairs);
+
+    // For Level 3: Replace 1 pair with 2 skulls to keep layout (24 cards)
+    if (level === 3) {
+        selectedSymbols.pop(); // Remove last symbol (1 pair = 2 cards)
+        const deck = [...selectedSymbols, ...selectedSymbols, 'skull', 'skull'];
+        console.log(`Deck for Level ${level}:`, deck);
+        return shuffle(deck);
+    }
+
     const deck = [...selectedSymbols, ...selectedSymbols];
     return shuffle(deck);
 }
@@ -49,6 +59,10 @@ function createCard(symbol) {
     const card = document.createElement('div');
     card.classList.add('memory-card');
     card.dataset.symbol = symbol;
+
+    if (symbol === 'skull') {
+        card.classList.add('skull-card');
+    }
 
     const cardFront = document.createElement('div');
     cardFront.classList.add('card-front');
@@ -74,9 +88,15 @@ function createCard(symbol) {
 }
 
 function flipCard() {
-    if (lockBoard || this === firstCard) return;
+    if (lockBoard || this === firstCard || this.classList.contains('flip')) return;
 
+    const symbol = this.dataset.symbol;
     this.classList.add('flip');
+
+    if (symbol === 'skull') {
+        setTimeout(() => handleSkullCard(this), 300);
+        return;
+    }
 
     if (!hasFlippedCard) {
         hasFlippedCard = true;
@@ -87,6 +107,29 @@ function flipCard() {
     secondCard = this;
     checkForMatch();
 }
+
+
+function handleSkullCard(card) {
+    if (lockBoard) return;
+    lockBoard = true;
+
+    setTimeout(() => {
+        const flippedCards = document.querySelectorAll('.memory-card.flip');
+
+        flippedCards.forEach(c => {
+            if (c !== card) {
+                c.classList.remove('flip');
+                c.addEventListener('click', flipCard, { once: false });
+            }
+        });
+
+        card.remove();
+
+        resetBoard();
+
+    }, 800); // Let flip animation play
+}
+
 
 function checkForMatch() {
     const isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
@@ -108,9 +151,15 @@ function unflipCards() {
     setTimeout(() => {
         firstCard.classList.remove('flip');
         secondCard.classList.remove('flip');
+
+        // Re-enable clicking
+        firstCard.addEventListener('click', flipCard, { once: false });
+        secondCard.addEventListener('click', flipCard, { once: false });
+
         resetBoard();
     }, 1000);
 }
+
 
 function resetBoard() {
     [firstCard, secondCard] = [null, null];
@@ -118,20 +167,11 @@ function resetBoard() {
     hasFlippedCard = false;
 }
 
-function initGame(numPairs) {
-    const deck = generateDeck(numPairs);
+function initGame(numPairs, level) {
+    const deck = generateDeck(numPairs, level);
     const totalCards = deck.length;
     const gameBoard = document.getElementById('game-board');
     gameBoard.innerHTML = '';
-
-    let columns = 8;
-    for (let i = 8; i >= 1; i--) {
-        if (totalCards % i === 0) {
-            columns = i;
-            break;
-        }
-    }
-    gameBoard.style.gridTemplateColumns = `repeat(${columns}, auto)`;
 
     deck.forEach(symbol => {
         const card = createCard(symbol);
@@ -139,17 +179,11 @@ function initGame(numPairs) {
     });
 }
 
-document.getElementById('start-game').addEventListener('click', () => {
-    const savedLevel = parseInt(sessionStorage.getItem('memory-last-level')) || 1;
-    currentLevel = savedLevel;
-
-    startLevel(currentLevel);
-    renderLevelSelector();
-});
-
 function startLevel(level) {
+    currentLevel = level;
+
     const numPairs = getNumParisForLevel(level);
-    initGame(numPairs);
+    initGame(numPairs, level);
     updateLevelDisplay(level);
 
     document.querySelector('.game-container').style.display = 'block';
@@ -160,6 +194,14 @@ function startLevel(level) {
     isTimerPaused = false;
     updateTimer();
 }
+
+document.getElementById('start-game').addEventListener('click', () => {
+    const savedLevel = parseInt(sessionStorage.getItem('memory-last-level')) || 1;
+    currentLevel = savedLevel;
+
+    startLevel(currentLevel);
+    renderLevelSelector();
+});
 
 function checkGameOver() {
     const cards = document.querySelectorAll('.memory-card');
@@ -224,12 +266,25 @@ function showLevelOverlay(current, next) {
 
     const overlay = document.createElement("div");
     overlay.classList.add('game-over-overlay');
+
+    const skullWarning = next === 3
+        ? `
+            <br>
+            <p>New Feature in Level 3!</p>
+            <p>Watch out for <strong>skull cards</strong>!</p>
+            <p>Clicking one will flip all revealed cards back!</p>
+            <br>
+            `
+        : '';
+
     overlay.innerHTML = `
         <h2>Level ${current} Completed!</h2>
         <p>You completed this level in ${levelSeconds}s</p>
+        ${skullWarning}
         <p>Get ready for Level ${next}!</p>
         <button id="next-level-btn" class="btn-retro">Next Level</button>
     `;
+
     document.body.appendChild(overlay);
 
     document.getElementById('next-level-btn').addEventListener('click', () => {
@@ -264,6 +319,7 @@ function updateTimer() {
     cancelAnimationFrame(animationFrameId);
     tick();
 }
+
 
 function renderLevelSelector() {
     const container = document.getElementById('level-selector');

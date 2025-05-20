@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALANGLIS - Memory Game</title>
+    <title>VALANGLIS - Memory</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -12,7 +13,7 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="./css/styles.css">
-
+    <link rel="icon" type="image/x-icon" href="./icons/favicon.ico">
 </head>
 
 <body>
@@ -20,7 +21,6 @@
     <div class="container text-center">
         <div id="header"></div>
 
-        <!--Game are-->
         <div class="game-container">
             <h2 class="">Memory</h2>
 
