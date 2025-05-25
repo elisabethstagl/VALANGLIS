@@ -535,3 +535,15 @@ footer {
     align-items: center;
     z-index: 9999;
 }
+
+
+
+/*==========  Snake  ========== */
+
+#gameContainerSnake{
+    text-align: center;
+}
+#gameBoardSnake{
+    border: 3px solid;
+    background-color: rgb(229, 223, 223);
+}
