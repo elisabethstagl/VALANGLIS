@@ -26,7 +26,7 @@
 
         <!-- wie beim Memory game -->
         <!--Difficulty selection area-->
-        <!-- <div id="difficulty-selector" class="mt-4">
+        <div id="difficulty-selector" class="mt-4">
             <label for="difficulty">level:</label>
             <select id="difficulty">
                 <option value="easy">easy</option>
@@ -34,12 +34,14 @@
                 <option value="hard">hard</option>
             </select>
             <button id="start-game" class="btn btn-primary">GO</button>
-        </div> -->
+        </div>
 
         <!--Game area-->
         <div id="gameContainerSnake">
             <canvas id="gameBoardSnake" width="500" height="500"></canvas>
-                <div id="scoreText">0</div>
+        </div>
+        <div id="scoreAndReset">
+            <div id="scoreText">0</div>
             <button id="resetBtn">Reset</button>
         </div>
     </div>
