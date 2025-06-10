@@ -30,6 +30,28 @@ function getNumParisForLevel(level) {
     return levelPairs[level] || 5;
 }
 
+function saveProgressToDatabase(level) {
+    if (!IS_LOGGED_IN) { // Prüfen, ob der Benutzer angemeldet ist
+        console.log("User not logged in, progress will not be saved to database.");
+        return;
+    }
+
+    $.ajax({
+        url: 'save_progress.php',
+        type: 'POST',
+        data: {
+            game_id: MEMORY_GAME_ID, // Aus PHP übergeben
+            level_reached: level
+        },
+        success: function(response) {
+            console.log('Progress saved successfully:', response.message);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error saving progress:', xhr.responseText);
+        }
+    });
+}
+
 function generateSymbols(numPairs) {
     const symbolsWithoutSkull = IMAGE_SYMBOLS.filter(sym => sym !== 'skull');
     return symbolsWithoutSkull.slice(0, numPairs);
@@ -240,6 +262,7 @@ function showFinalVictoryOverlay() {
 
     sessionStorage.setItem('memory-last-level', maxLevel);
     sessionStorage.setItem('memory-max-level', maxLevel);
+    saveProgressToDatabase(maxLevel); // Fortschritt in DB speichern
 
     const overlay = document.createElement("div");
     overlay.classList.add('game-over-overlay');
@@ -276,6 +299,7 @@ function showLevelOverlay(current, next) {
     const previousMax = parseInt(sessionStorage.getItem('memory-max-level')) || 1;
     if (next > previousMax) {
         sessionStorage.setItem('memory-max-level', next);
+        saveProgressToDatabase(next); // Fortschritt in DB speichern, wenn neues Max-Level
     }
 
     const overlay = document.createElement("div");

@@ -1,5 +1,5 @@
 <?php
-$title = "Mein Profil";
+$title = "My Profile";
 include 'initial.php';
 
 if (!$loggedIn) {
@@ -88,6 +88,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete-profile"])) {
 
     $stmt->close();
 }
+
+// Progress-Daten abrufen
+$progressData = [];
+if ($loggedIn) {
+    $progress_sql = "SELECT g.name, p.level_reached
+                     FROM progress p
+                     JOIN games g ON p.game_id = g.id
+                     WHERE p.user_id = ?";
+    $stmt = $db->prepare($progress_sql);
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $progressData[] = $row;
+        }
+        $stmt->close();
+    } else {
+        $errMsg = "Error preparing progress statement: " . $db->error;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -163,6 +184,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete-profile"])) {
 
             </div>
         </div>
+        <div class="d-flex justify-content-start align-items-center">
+            <div class="form-box mt-4"> <h4 style="text-align: left;">My Progress</h4>
+
+                <?php if (empty($progressData)): ?>
+                    <p>No progress data found yet.</p>
+                <?php else: ?>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Game</th>
+                                <th scope="col">Level Reached</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($progressData as $progress): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($progress['name']) ?></td>
+                                    <td><?= htmlspecialchars($progress['level_reached']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+
+            </div>
+        </div>
     </div>
 
     <div id="footer"></div>
@@ -170,7 +217,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete-profile"])) {
     <script src="./javascript/header-footer-loading.js"></script>
     <script src="./javascript/profile.js"></script>
 
-    <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
