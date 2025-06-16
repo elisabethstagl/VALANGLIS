@@ -18,6 +18,10 @@ let foodX;
 let foodY;
 let score = 0;
 
+let mediumUnlocked = false;
+let hardUnlocked = false;
+
+
 let snake = [
     {x:unitSize * 4, y:0},
     {x:unitSize * 3, y:0},
@@ -75,6 +79,37 @@ let currentStats = difficulties.easy;
 
 
 const difficultySelect = document.getElementById('difficulty');
+let mediumOption = document.querySelector('#difficulty option[value="medium"]');
+let hardOption = document.querySelector('#difficulty option[value="hard"]');
+
+
+function loadLevelUnlockState() {
+    // Infos aus sessionStorage lesen
+    if (sessionStorage.getItem('levelMediumUnlocked') === 'true') {
+        mediumUnlocked = true;
+        mediumOption.disabled = false;
+        mediumOption.textContent = 'medium';
+    }
+
+    if (sessionStorage.getItem('levelHardUnlocked') === 'true') {
+        hardUnlocked = true;
+        hardOption.disabled = false;
+        hardOption.textContent = 'hard';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadLevelUnlockState();
+});
+
+
+
+
+
+
+
+
+
 const startButton = document.getElementById('start-game');
 
 
@@ -82,7 +117,11 @@ window.addEventListener("keydown", changeDirection);
 resetBtn.addEventListener("click", resetGame);
 
 
+
+
 startButton.addEventListener('click', () => {
+
+
     let selectedDifficulty = difficultySelect.value;
     switch(selectedDifficulty) {
         case 'easy':
@@ -107,7 +146,7 @@ startButton.addEventListener('click', () => {
 
 function startGame(){
     running= true;
-    scoreText.textContent = score;
+    scoreText.textContent = "Score: " + score;
     createFood();
     drawFood();
     nextTick();
@@ -121,6 +160,7 @@ function nextTick(){
             drawFood();
             moveSnake();
             drawSnake();
+            checkLevelUnlock();
             checkGameOver();
             nextTick();
         }, currentStats.speed - (score * currentStats.speedupfactor));
@@ -211,7 +251,7 @@ function moveSnake(){
 
     if(snake[0].x == foodX && snake[0].y == foodY){
         score+=1;
-        scoreText.textContent = score;
+        scoreText.textContent = "Score: " + score;
         createFood();
     } else{
         snake.pop();
@@ -278,6 +318,31 @@ function changeDirection(event){
     }
 
 };
+
+
+
+
+function checkLevelUnlock(){
+    
+    if((!mediumUnlocked) && (currentStats.difficulty == 'easy') && (score == 3)){
+        mediumUnlocked = true;
+        mediumOption.disabled = false;
+        mediumOption.textContent = 'medium';    // entfernt das "(locked)"
+        
+        sessionStorage.setItem('levelMediumUnlocked', 'true');
+    }
+
+    if((!hardUnlocked) && (currentStats.difficulty == 'medium') && (score == 5)){
+        hardUnlocked = true;
+        hardOption.disabled = false;
+        hardOption.textContent = 'hard';        // entfernt das "(locked)"
+        
+        sessionStorage.setItem('levelHardUnlocked', 'true');
+    }
+
+};
+
+
 
 function checkGameOver(){
     // Schlange ist außerhalb Spielfeld

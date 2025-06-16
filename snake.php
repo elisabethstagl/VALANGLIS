@@ -19,7 +19,7 @@
     <div class="container text-center">
         <!--Logo area-->
         <div class="valanglis-logo-container">
-            <a href="index.html">
+            <a href="index.php">
                 <img class="valanglis-logo" src="./images/valanglis-logo-2.png" alt="valanglis-logo">
             </a>
         </div>
@@ -27,11 +27,11 @@
         <!-- wie beim Memory game -->
         <!--Difficulty selection area-->
         <div id="difficulty-selector" class="mt-4">
-            <label for="difficulty">level:</label>
+            <label for="difficulty">level: </label>
             <select id="difficulty">
-                <option value="easy">easy</option>
-                <option value="medium" selected>medium</option>
-                <option value="hard">hard</option>
+                <option value="easy" selected>easy</option>
+                <option value="medium" disabled>medium (locked)</option>
+                <option value="hard" disabled>hard (locked)</option>
             </select>
             <button id="start-game" class="btn btn-primary">GO</button>
         </div>
@@ -41,7 +41,7 @@
             <canvas id="gameBoardSnake" width="500" height="500"></canvas>
         </div>
         <div id="scoreAndReset">
-            <div id="scoreText">0</div>
+            <div id="scoreText">Score: 0</div>
             <button id="resetBtn">Reset</button>
         </div>
     </div>
