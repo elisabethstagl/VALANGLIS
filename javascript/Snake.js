@@ -1,6 +1,7 @@
 const gameBoardSnake = document.querySelector("#gameBoardSnake");
 const ctx = gameBoardSnake.getContext("2d");
 const scoreText = document.querySelector("#scoreText");
+const info = document.querySelector("#info");
 const resetBtn = document.querySelector("#resetBtn");
 const gameWidth = gameBoardSnake.width;
 const gameHeight = gameBoardSnake.height;
@@ -85,13 +86,13 @@ let hardOption = document.querySelector('#difficulty option[value="hard"]');
 
 function loadLevelUnlockState() {
     // Infos aus sessionStorage lesen
-    if (sessionStorage.getItem('levelMediumUnlocked') === 'true') {
+    if (sessionStorage.getItem('snake-max-level') >= 2) {
         mediumUnlocked = true;
         mediumOption.disabled = false;
         mediumOption.textContent = 'medium';
     }
 
-    if (sessionStorage.getItem('levelHardUnlocked') === 'true') {
+    if (sessionStorage.getItem('snake-max-level') >= 3) {
         hardUnlocked = true;
         hardOption.disabled = false;
         hardOption.textContent = 'hard';
@@ -100,6 +101,7 @@ function loadLevelUnlockState() {
 
 window.addEventListener('DOMContentLoaded', () => {
     loadLevelUnlockState();
+    
 });
 
 
@@ -127,14 +129,20 @@ startButton.addEventListener('click', () => {
         case 'easy':
             currentStats = difficulties.easy;
             gameBoardSnake.style.borderColor = 'transparent';
+            info.classList.remove('hidden');
+            info.textContent = "Teleportiere dich durch die Wände!";
           break;
         case 'medium':
             currentStats = difficulties.medium;
             gameBoardSnake.style.borderColor = 'black';
+            info.classList.remove('hidden');
+            info.textContent = "Die Wände sind fest – halte Abstand!";
           break;
         case 'hard':
             currentStats = difficulties.hard;
             gameBoardSnake.style.borderColor = 'black';
+            info.classList.remove('hidden');
+            info.textContent = "ALLE Wände sind fest – halte Abstand!";
           break;
       }
     console.log('Selected difficulty:', selectedDifficulty);
@@ -329,7 +337,7 @@ function checkLevelUnlock(){
         mediumOption.disabled = false;
         mediumOption.textContent = 'medium';    // entfernt das "(locked)"
         
-        sessionStorage.setItem('levelMediumUnlocked', 'true');
+        sessionStorage.setItem('snake-max-level', '2');
     }
 
     if((!hardUnlocked) && (currentStats.difficulty == 'medium') && (score == 5)){
@@ -337,7 +345,7 @@ function checkLevelUnlock(){
         hardOption.disabled = false;
         hardOption.textContent = 'hard';        // entfernt das "(locked)"
         
-        sessionStorage.setItem('levelHardUnlocked', 'true');
+        sessionStorage.setItem('snake-max-level', '3');
     }
 
 };

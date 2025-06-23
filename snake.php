@@ -40,9 +40,11 @@
         <div id="gameContainerSnake">
             <canvas id="gameBoardSnake" width="500" height="500"></canvas>
         </div>
-        <div id="scoreAndReset">
+        <div id="scoreAndReset" class="fixed-panel">
             <div id="scoreText">Score: 0</div>
             <button id="resetBtn">Reset</button>
+        </div>
+        <div id="info" class="fixed-panel hidden">
         </div>
     </div>
 
