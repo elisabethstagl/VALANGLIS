@@ -27,7 +27,7 @@ include 'initial.php';
 
         <div class="row games-container">
             <div class="col-md-4 col-sm-12">
-                <a href="#" class="game-link">
+                <a href="memory-game.php" class="game-link">
                     <div class="game-div">Memory</div>
                 </a>
             </div>

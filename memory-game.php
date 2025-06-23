@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALANGLIS - Memory Game</title>
+    <title>VALANGLIS - Memory</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -12,39 +13,37 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="./css/styles.css">
-
+    <link rel="icon" type="image/x-icon" href="./icons/favicon.ico">
 </head>
 
 <body>
-    <div id="header"></div>
+
     <div class="container text-center">
-        <!--Logo area-->
-        <div class="valanglis-logo-container">
-            <a href="index.html">
-                <img class="valanglis-logo" src="./images/valanglis-logo-2.png" alt="valanglis-logo">
-            </a>
-        </div>
+        <div id="header"></div>
 
-
-        <!--Difficulty selection area-->
-        <div id="difficulty-selector" class="my-4">
-            <button id="start-game" class="btn btn-primary">Start Game</button>
-        </div>
-
-        <!--Game are-->
         <div class="game-container">
-            <h2 class="mt-4">Memory Game</h2>
+            <h2 class="">Memory</h2>
 
-            <div id="level-and-timer" class="mt-3">
-                <span id="level-display">Level 1</span> |
-                <span id="timer">Time: 0s</span>
+            <div id="start-game-button">
+                <button id="start-game" class="btn-retro">Start Game</button>
+            </div>
+
+            <div id="level-and-timer-wrapper">
+                <div id="level-and-timer">
+                    <span id="level-display">Level 1</span> |
+                    <span id="timer">Time: 0.0s</span>
+                </div>
+                <div id="level-selector" class="level-selector"></div>
             </div>
 
             <div id="game-board"></div>
         </div>
+
     </div>
 
     <div id="footer"></div>
+
+    <script src="./javascript/header-footer-loading.js"></script>
     <script src="./javascript/memory-game.js"></script>
 </body>
 
