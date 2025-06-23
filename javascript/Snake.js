@@ -79,7 +79,7 @@ let currentStats = difficulties.easy;
 
 
 
-const difficultySelect = document.getElementById('difficulty');
+let difficultySelect = document.getElementById('difficulty');
 let mediumOption = document.querySelector('#difficulty option[value="medium"]');
 let hardOption = document.querySelector('#difficulty option[value="hard"]');
 
@@ -337,6 +337,9 @@ function checkLevelUnlock(){
         mediumOption.disabled = false;
         mediumOption.textContent = 'medium';    // entfernt das "(locked)"
         
+        mediumOption.selected = true;
+        unlockAnimation();
+
         sessionStorage.setItem('snake-max-level', '2');
     }
 
@@ -344,12 +347,24 @@ function checkLevelUnlock(){
         hardUnlocked = true;
         hardOption.disabled = false;
         hardOption.textContent = 'hard';        // entfernt das "(locked)"
+
+        hardOption.selected = true;
+        unlockAnimation();
         
         sessionStorage.setItem('snake-max-level', '3');
     }
 
 };
 
+function unlockAnimation(){
+        // Animation per CSS
+        difficultySelect.classList.add('level-unlocked');
+
+        // Entfernt die Animation nach einigen Sekunden
+        setTimeout(() => {
+            difficultySelect.classList.remove('level-unlocked');
+        }, 3000);
+}
 
 
 function checkGameOver(){
