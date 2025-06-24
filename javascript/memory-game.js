@@ -31,16 +31,16 @@ function getNumParisForLevel(level) {
 }
 
 function saveProgressToDatabase(level) {
-    if (!IS_LOGGED_IN) { // Prüfen, ob der Benutzer angemeldet ist
+    if (!IS_LOGGED_IN) {
         console.log("User not logged in, progress will not be saved to database.");
         return;
     }
 
     $.ajax({
-        url: 'save_progress.php',
+        url: 'save-progress.php',
         type: 'POST',
         data: {
-            game_id: MEMORY_GAME_ID, // Aus PHP übergeben
+            game_id: MEMORY_GAME_ID,
             level_reached: level
         },
         success: function(response) {

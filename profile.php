@@ -129,89 +129,83 @@ if ($loggedIn) {
 </head>
 
 <body>
-
+    
     <div class="container">
         <div id="header"></div>
+        <div class="d-flex justify-content-start align-items-start flex-row gap-5">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="form-box">
+                    <h4 style="text-align: left;">My Profile</h4>
 
-        <div class="d-flex justify-content-start align-items-center">
-            <div class="form-box">
-                <h4 style="text-align: left;">My Profile</h4>
+                    <?php if (!empty($errMsg)): ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($errMsg) ?></div>
+                    <?php elseif (!empty($successMsg)): ?>
+                        <div class="alert alert-success"><?= htmlspecialchars($successMsg) ?></div>
+                    <?php endif; ?>
 
-                <?php if (!empty($errMsg)): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($errMsg) ?></div>
-                <?php elseif (!empty($successMsg)): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($successMsg) ?></div>
-                <?php endif; ?>
+                    <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="profileForm">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                                <label class="small-label" for="username">Username</label>
+                                <input type="text" id="username" name="username" class="retro-input" required
+                                    value="<?= htmlspecialchars($username) ?>">
+                            </div>
 
-                <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="profileForm">
-                    <div class="row">
-                        <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
-                            <label class="small-label" for="username">Username</label>
-                            <input type="text" id="username" name="username" class="retro-input" required
-                                value="<?= htmlspecialchars($username) ?>">
-                        </div>
-
-                        <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
-                            <label class="small-label" for="email">Email</label>
-                            <input type="email" id="email" name="email" class="retro-input" required
-                                value="<?= htmlspecialchars($email) ?>">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
-                            <label class="small-label" for="current_password">Current Password</label>
-                            <div class="input-wrapper position-relative">
-                                <input type="password" id="current_password" name="current_password"
-                                    class="retro-input">
-                                <img src="./icons/eye.svg" class="toggle-password" data-toggle="#current_password"
-                                    alt="Toggle Password">
+                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                                <label class="small-label" for="email">Email</label>
+                                <input type="email" id="email" name="email" class="retro-input" required
+                                    value="<?= htmlspecialchars($email) ?>">
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
-                            <label class="small-label" for="new_password">New Password</label>
-                            <div class="input-wrapper position-relative">
-                                <input type="password" id="new_password" name="new_password" class="retro-input">
-                                <img src="./icons/eye.svg" class="toggle-password" data-toggle="#new_password"
-                                    alt="Toggle Password">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                                <label class="small-label" for="current_password">Current Password</label>
+                                <div class="input-wrapper position-relative">
+                                    <input type="password" id="current_password" name="current_password"
+                                        class="retro-input">
+                                    <img src="./icons/eye.svg" class="toggle-password" data-toggle="#current_password"
+                                        alt="Toggle Password">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                                <label class="small-label" for="new_password">New Password</label>
+                                <div class="input-wrapper position-relative">
+                                    <input type="password" id="new_password" name="new_password" class="retro-input">
+                                    <img src="./icons/eye.svg" class="toggle-password" data-toggle="#new_password"
+                                        alt="Toggle Password">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="d-flex btn-container-save-del">
-                        <button type="submit" class="btn-retro" name="update-profile">Save changes</button>
-                        <button type="button" class="btn-retro profile-delete-btn" id="deleteProfileBtn">Delete
-                            profile</button>
-                    </div>
-                </form>
+                        <div class="d-flex btn-container-save-del">
+                            <button type="submit" class="btn-retro" name="update-profile">Save changes</button>
+                            <button type="button" class="btn-retro profile-delete-btn" id="deleteProfileBtn">Delete
+                                profile</button>
+                        </div>
+                    </form>
 
+                </div>
             </div>
-        </div>
-        <div class="d-flex justify-content-start align-items-center">
-            <div class="form-box mt-4"> <h4 style="text-align: left;">My Progress</h4>
 
-                <?php if (empty($progressData)): ?>
-                    <p>No progress data found yet.</p>
-                <?php else: ?>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Game</th>
-                                <th scope="col">Level Reached</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="d-flex flex-column align-items-start">
+                <div class="form-box">
+                    <h4>Highest Levels</h4>
+
+                    <?php if (empty($progressData)): ?>
+                        <p>No progress data found yet.</p>
+                    <?php else: ?>
+                        <div class="d-flex flex-column gap-2">
                             <?php foreach ($progressData as $progress): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($progress['name']) ?></td>
-                                    <td><?= htmlspecialchars($progress['level_reached']) ?></td>
-                                </tr>
+                                <div class="d-flex justify-content-between border-bottom pb-1">
+                                    <span><?= htmlspecialchars($progress['name']) ?></span>
+                                    <span class="text-end"><?= htmlspecialchars($progress['level_reached']) ?></span>
+                                </div>
                             <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php endif; ?>
-
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

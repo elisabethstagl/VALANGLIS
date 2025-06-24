@@ -1,39 +1,21 @@
 <?php
-// save_progress.php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+include 'initial.php';
 
-// Stellen Sie sicher, dass der Benutzer angemeldet ist
-if (!isset($_SESSION["id"])) {
+if (!$loggedIn) {
     http_response_code(401); // Unauthorized
     echo json_encode(["message" => "Not authenticated."]);
     exit();
 }
 
-include_once 'database/dbaccess.php'; // Pfad zu Ihrer Datenbankverbindung
-
 header('Content-Type: application/json');
 
-$userId = $_SESSION["id"]; // userId aus der PHP-Session
-$gameId = $_POST["game_id"] ?? null; // Die ID für das Memory-Spiel
+$gameId = $_POST["game_id"] ?? null;
 $levelReached = $_POST["level_reached"] ?? null;
-
-// Stellen Sie sicher, dass game_id und level_reached vorhanden sind
-if ($gameId === null || $levelReached === null) {
-    http_response_code(400); // Bad Request
-    echo json_encode(["message" => "Missing game_id or level_reached."]);
-    exit();
-}
-
-// Optional: Validieren Sie game_id und level_reached (z.B. Integer-Typen)
-$gameId = (int)$gameId;
-$levelReached = (int)$levelReached;
 
 // Zuerst prüfen, ob bereits ein Eintrag für diesen Benutzer und dieses Spiel existiert
 $sqlCheck = "SELECT level_reached FROM progress WHERE user_id = ? AND game_id = ?";
 $stmtCheck = $db->prepare($sqlCheck);
-$stmtCheck->bind_param("ii", $userId, $gameId);
+$stmtCheck->bind_param("ii", $id, $gameId);
 $stmtCheck->execute();
 $resultCheck = $stmtCheck->get_result();
 
@@ -46,7 +28,7 @@ if ($resultCheck->num_rows > 0) {
         // Aktualisieren, wenn das neue Level höher ist
         $sqlUpdate = "UPDATE progress SET level_reached = ? WHERE user_id = ? AND game_id = ?";
         $stmtUpdate = $db->prepare($sqlUpdate);
-        $stmtUpdate->bind_param("iii", $levelReached, $userId, $gameId);
+        $stmtUpdate->bind_param("iii", $levelReached, $id, $gameId);
         if ($stmtUpdate->execute()) {
             echo json_encode(["message" => "Progress updated successfully."]);
         } else {
@@ -62,7 +44,7 @@ if ($resultCheck->num_rows > 0) {
     // Eintrag existiert nicht, neuen Eintrag hinzufügen
     $sqlInsert = "INSERT INTO progress (user_id, game_id, level_reached) VALUES (?, ?, ?)";
     $stmtInsert = $db->prepare($sqlInsert);
-    $stmtInsert->bind_param("iii", $userId, $gameId, $levelReached);
+    $stmtInsert->bind_param("iii", $id, $gameId, $levelReached);
     if ($stmtInsert->execute()) {
         echo json_encode(["message" => "Progress inserted successfully."]);
     } else {
