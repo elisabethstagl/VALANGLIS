@@ -32,7 +32,7 @@ include 'initial.php';
                 </a>
             </div>
             <div class="col-md-4 col-sm-12">
-                <a href="#" class="game-link">
+                <a href="snake.php" class="game-link">
                     <div class="game-div">Snake</div>
                 </a>
             </div>
