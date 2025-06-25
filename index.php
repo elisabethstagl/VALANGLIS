@@ -38,7 +38,7 @@ include 'initial.php';
             </div>
             <div class="col-md-4 col-sm-12">
                 <a href="#" class="game-link">
-                    <div class="game-div">Ping-Pong</div>
+                    <div class="game-div">Arkanoid</div>
                 </a>
             </div>
         </div>
