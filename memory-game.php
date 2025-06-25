@@ -1,6 +1,10 @@
+<?php
+include 'initial.php';
+$memoryGameId = 1;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
     <meta charset="UTF-8">
@@ -44,6 +48,10 @@
     <div id="footer"></div>
 
     <script src="./javascript/header-footer-loading.js"></script>
+    <script>
+        const MEMORY_GAME_ID = <?= $memoryGameId ?>;
+        const IS_LOGGED_IN = <?= json_encode($loggedIn) ?>;
+    </script>
     <script src="./javascript/memory-game.js"></script>
 </body>
 

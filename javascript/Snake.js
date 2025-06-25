@@ -83,6 +83,27 @@ let difficultySelect = document.getElementById('difficulty');
 let mediumOption = document.querySelector('#difficulty option[value="medium"]');
 let hardOption = document.querySelector('#difficulty option[value="hard"]');
 
+function saveProgressToDatabase(level) {
+    if (!IS_LOGGED_IN) {
+        console.log("User not logged in, progress will not be saved to database.");
+        return;
+    }
+
+    $.ajax({
+        url: 'save-progress.php',
+        type: 'POST',
+        data: {
+            game_id: SNAKE_GAME_ID,
+            level_reached: level
+        },
+        success: function(response) {
+            console.log('Progress saved successfully:', response.message);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error saving progress:', xhr.responseText);
+        }
+    });
+}
 
 function loadLevelUnlockState() {
     // Infos aus sessionStorage lesen
@@ -341,6 +362,7 @@ function checkLevelUnlock(){
         unlockAnimation();
 
         sessionStorage.setItem('snake-max-level', '2');
+        saveProgressToDatabase(2);
     }
 
     if((!hardUnlocked) && (currentStats.difficulty == 'medium') && (score == 5)){
@@ -352,6 +374,7 @@ function checkLevelUnlock(){
         unlockAnimation();
         
         sessionStorage.setItem('snake-max-level', '3');
+        saveProgressToDatabase(3);
     }
 
 };

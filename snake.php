@@ -1,3 +1,8 @@
+<?php
+include 'initial.php';
+$snakeGameId = 2;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,7 +54,13 @@
     </div>
 
     <div id="footer"></div>
-    <script src="./javascript/Snake.js"></script>
+
+    <script src="./javascript/header-footer-loading.js"></script>
+    <script>
+        const SNAKE_GAME_ID = <?= $snakeGameId ?>;
+        const IS_LOGGED_IN = <?= json_encode($loggedIn) ?>;
+    </script>
+    <script src="./javascript/snake.js"></script>
 </body>
 
 </html>
