@@ -52,6 +52,7 @@ $memoryGameId = 1;
         const MEMORY_GAME_ID = <?= $memoryGameId ?>;
         const IS_LOGGED_IN = <?= json_encode($loggedIn) ?>;
     </script>
+    <script src="./javascript/save-progress.js"></script>
     <script src="./javascript/memory-game.js"></script>
 </body>
 

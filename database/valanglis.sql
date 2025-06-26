@@ -65,10 +65,10 @@ CREATE TABLE `users` (
 -- Daten für Tabelle `games`
 --
 
-INSERT INTO `games` (`id`, `name`, `description`, `created_at`) VALUES
-(1, 'Memory', 'A classic memory matching game.', '2025-06-09 20:00:00'),
-(2, 'Snake', 'A classic arcade game where the player controls a growing snake, trying to eat food and avoid crashing into walls or itself.', '2025-06-09 20:00:00'),
-(3, 'Arkanoid', 'A classic arcade game where the player controls a paddle to bounce a ball and break bricks on the screen.', '2025-06-09 20:00:00');
+INSERT INTO `games` (`id`, `name`, `description`) VALUES
+(1, 'Memory', 'A classic memory matching game.'),
+(2, 'Snake', 'A classic arcade game where the player controls a growing snake, trying to eat food and avoid crashing into walls or itself.'),
+(3, 'Arkanoid', 'A classic arcade game where the player controls a paddle to bounce a ball and break bricks on the screen.');
 
 --
 -- Indizes der exportierten Tabellen

@@ -82,7 +82,7 @@ if ($submitted) {
 
         <div id="header"></div>
 
-        <div class="d-flex justify-content-start align-items-center">
+        <div class="justify-content-start align-items-center">
             <div class="form-box">
                 <h4 style="text-align: left;">Create Account</h4>
 
@@ -95,7 +95,7 @@ if ($submitted) {
 
                     <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="row">
-                            <div class="col-12 col-lg-4 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <label class="small-label" for="username">Username</label>
                                 <input type="text" id="username" name="username" class="retro-input <?php if ($submitted)
                                     echo empty($errUsername) ? 'is-valid' : 'is-invalid'; ?>" required
@@ -103,17 +103,17 @@ if ($submitted) {
                                 <div class="invalid-feedback"><?= $errUsername ?></div>
                             </div>
 
-                            <div class="col-12 col-lg-4 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <label class="small-label" for="email">Email</label>
                                 <input type="email" id="email" name="email" class="retro-input <?php if ($submitted)
                                     echo empty($errEmail) ? 'is-valid' : 'is-invalid'; ?>" required
                                     value="<?= htmlspecialchars($email) ?>">
                                 <div class="invalid-feedback"><?= $errEmail ?></div>
                             </div>
+                        </div>
 
-
-
-                            <div class="col-12 col-lg-4 col-md-6 d-flex flex-column mb-3">
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <label class="small-label" for="password">Password</label>
                                 <div class="input-wrapper position-relative">
                                     <input type="password" id="password" name="password"
@@ -125,7 +125,7 @@ if ($submitted) {
                                 </div>
                             </div>
 
-                            <div class="col-12 col-lg-4 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <label class="small-label" for="password-repeat">Repeat Password</label>
                                 <div class="input-wrapper position-relative">
                                     <input type="password" id="password-repeat" name="password-repeat"
@@ -137,8 +137,6 @@ if ($submitted) {
                                 </div>
                                 <div class="invalid-feedback d-block"><?= $errPassword ?></div>
                             </div>
-
-
                         </div>
 
                         <div class="text-start">

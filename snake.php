@@ -23,11 +23,7 @@ $snakeGameId = 2;
 <body>
     <div class="container text-center">
         <!--Logo area-->
-        <div class="valanglis-logo-container">
-            <a href="index.php">
-                <img class="valanglis-logo" src="./images/valanglis-logo-2.png" alt="valanglis-logo">
-            </a>
-        </div>
+        <div id="header"></div>
 
         <!-- wie beim Memory game -->
         <!--Difficulty selection area-->
@@ -60,6 +56,7 @@ $snakeGameId = 2;
         const SNAKE_GAME_ID = <?= $snakeGameId ?>;
         const IS_LOGGED_IN = <?= json_encode($loggedIn) ?>;
     </script>
+    <script src="./javascript/save-progress.js"></script>
     <script src="./javascript/snake.js"></script>
 </body>
 
