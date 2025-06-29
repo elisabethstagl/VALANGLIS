@@ -124,7 +124,11 @@ footer {
     margin-bottom: 80px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: space-between;
+}
+
+.games-container .col-md-4{
+    max-width: 300px;
 }
 
 .game-div {
@@ -158,6 +162,7 @@ footer {
     color: inherit;
     display: block;
     height: 100%;
+    max-width: 300px;
 }
 
 .game-div:hover {
