@@ -1,7 +1,6 @@
 <?php
-session_start();
-$title = "Login";
 include 'initial.php';
+$title = "Login";
 
 $error = false;
 $nameOrEmail = $_POST["nameOrEmail"] ?? "";

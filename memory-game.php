@@ -1,6 +1,14 @@
 <?php
 include 'initial.php';
-$memoryGameId = 1;
+
+$gameName = 'Memory';
+$sql = "SELECT id FROM games WHERE name = ?";
+$stmt = $db->prepare($sql);
+$stmt->bind_param("s", $gameName);
+$stmt->execute();
+$stmt->bind_result($gameID);
+$stmt->fetch();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -49,9 +57,9 @@ $memoryGameId = 1;
 
     <script src="./javascript/header-footer-loading.js"></script>
     <script>
-        const MEMORY_GAME_ID = <?= $memoryGameId ?>;
-        const IS_LOGGED_IN = <?= json_encode($loggedIn) ?>;
+        const MEMORY_GAME_ID = <?= $gameID ?>;
     </script>
+    <script src="./javascript/save-progress.js"></script>
     <script src="./javascript/memory-game.js"></script>
 </body>
 

@@ -132,8 +132,8 @@ if ($loggedIn) {
     
     <div class="container">
         <div id="header"></div>
-        <div class="d-flex justify-content-start align-items-start flex-row gap-5">
-            <div class="d-flex justify-content-start align-items-center">
+        <div class="row">
+            <div class="col-12 col-xl-7 mb-5">
                 <div class="form-box">
                     <h4 style="text-align: left;">My Profile</h4>
 
@@ -145,13 +145,13 @@ if ($loggedIn) {
 
                     <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="profileForm">
                         <div class="row">
-                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="small-label" for="username">Username</label>
                                 <input type="text" id="username" name="username" class="retro-input" required
                                     value="<?= htmlspecialchars($username) ?>">
                             </div>
 
-                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="small-label" for="email">Email</label>
                                 <input type="email" id="email" name="email" class="retro-input" required
                                     value="<?= htmlspecialchars($email) ?>">
@@ -159,7 +159,7 @@ if ($loggedIn) {
                         </div>
 
                         <div class="row">
-                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="small-label" for="current_password">Current Password</label>
                                 <div class="input-wrapper position-relative">
                                     <input type="password" id="current_password" name="current_password"
@@ -169,7 +169,7 @@ if ($loggedIn) {
                                 </div>
                             </div>
 
-                            <div class="col-12 col-lg-6 col-md-6 d-flex flex-column mb-3">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="small-label" for="new_password">New Password</label>
                                 <div class="input-wrapper position-relative">
                                     <input type="password" id="new_password" name="new_password" class="retro-input">
@@ -185,11 +185,12 @@ if ($loggedIn) {
                                 profile</button>
                         </div>
                     </form>
-
                 </div>
             </div>
 
-            <div class="d-flex flex-column align-items-start">
+            <div class="col-xl-1"></div>
+
+            <div class="col-12 col-xl-4">
                 <div class="form-box">
                     <h4>Highest Levels</h4>
 

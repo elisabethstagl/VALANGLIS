@@ -50,6 +50,8 @@ include 'initial.php';
     <div id="footer"></div>
 
     <script src="./javascript/header-footer-loading.js"></script>
+    <script src="./javascript/save-progress.js"></script>
+
 </body>
 
 

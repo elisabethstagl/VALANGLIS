@@ -32,7 +32,6 @@ if ($resultCheck->num_rows > 0) {
         if ($stmtUpdate->execute()) {
             echo json_encode(["message" => "Progress updated successfully."]);
         } else {
-            http_response_code(500);
             echo json_encode(["message" => "Error updating progress: " . $stmtUpdate->error]);
         }
         $stmtUpdate->close();
