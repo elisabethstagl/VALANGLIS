@@ -1,9 +1,12 @@
-function saveProgressToDatabase(gameID, level) {
-    if (!IS_LOGGED_IN) {
-        console.log("User not logged in, progress will not be saved to database.");
-        return;
-    }
+if (sessionStorage.getItem('memory-max-level') !== null) {
+    saveProgressToDatabase(1, sessionStorage.getItem('memory-max-level'));
+}
 
+if (sessionStorage.getItem('snake-max-level') !== null) {
+    saveProgressToDatabase(2, sessionStorage.getItem('snake-max-level'));
+}
+
+function saveProgressToDatabase(gameID, level) {
     $.ajax({
         url: 'save-progress.php',
         type: 'POST',

@@ -1,6 +1,14 @@
 <?php
 include 'initial.php';
-$snakeGameId = 2;
+
+$gameName = 'Snake';
+$sql = "SELECT id FROM games WHERE name = ?";
+$stmt = $db->prepare($sql);
+$stmt->bind_param("s", $gameName);
+$stmt->execute();
+$stmt->bind_result($gameID);
+$stmt->fetch();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -53,8 +61,7 @@ $snakeGameId = 2;
 
     <script src="./javascript/header-footer-loading.js"></script>
     <script>
-        const SNAKE_GAME_ID = <?= $snakeGameId ?>;
-        const IS_LOGGED_IN = <?= json_encode($loggedIn) ?>;
+        const SNAKE_GAME_ID = <?= $gameID ?>;
     </script>
     <script src="./javascript/save-progress.js"></script>
     <script src="./javascript/snake.js"></script>
