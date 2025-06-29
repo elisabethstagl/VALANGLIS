@@ -37,7 +37,7 @@ include 'initial.php';
                 </a>
             </div>
             <div class="col-md-4 col-sm-12">
-                <a href="#" class="game-link">
+                <a href="Arkanoid.php" class="game-link">
                     <div class="game-div">Arkanoid</div>
                 </a>
             </div>

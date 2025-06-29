@@ -645,7 +645,7 @@ footer {
 }
 
 #scoreAndReset {
-    top: 10px;
+    top: 100px;
     right: 10px;
 }
 
@@ -678,4 +678,39 @@ footer {
     animation: unlockPulse 1.5s ease-in-out 2;
     border: 2px solid #28a745;
     border-radius: 4px;
+}
+
+
+/*==========  Arkanoid  ========== */
+.game-container-arkanoid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* or whatever fits your layout */
+}
+
+#ball-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.center-select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding-bottom: 230px;
 }
