@@ -196,6 +196,7 @@ footer {
     .games-container {
         margin-bottom: 80px;
         gap: 30px;
+        justify-content: center;
     }
 
     .game-div {
