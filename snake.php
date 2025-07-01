@@ -33,8 +33,8 @@ $stmt->close();
         <!--Logo area-->
         <div id="header"></div>
 
-        <!-- wie beim Memory game -->
         <!--Difficulty selection area-->
+        <h2>Snake</h2>
         <div id="difficulty-selector" class="mt-4">
             <label for="difficulty">level: </label>
             <select id="difficulty">
@@ -44,11 +44,22 @@ $stmt->close();
             </select>
             <button id="start-game" class="btn btn-primary">GO</button>
         </div>
-
+        
         <!--Game area-->
         <div id="gameContainerSnake">
-            <canvas id="gameBoardSnake" width="500" height="500"></canvas>
+            <canvas id="gameBoardSnake"></canvas>
         </div>
+        <div id="touch-controls">
+            <div class="row-controls">
+                <button class="btn-touch" data-dir="up">⬆️</button>
+            </div>
+            <div class="row-controls">
+                <button class="btn-touch" data-dir="left">⬅️</button>
+                <button class="btn-touch" data-dir="down">⬇️</button>
+                <button class="btn-touch" data-dir="right">➡️</button>
+            </div>
+        </div>
+
         <div id="scoreAndReset" class="fixed-panel">
             <div id="scoreText">Score: 0</div>
             <button id="resetBtn">Reset</button>
