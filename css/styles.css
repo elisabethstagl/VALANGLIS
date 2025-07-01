@@ -679,6 +679,38 @@ footer {
     width: 200px;
 }
 
+#touch-controls {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 30px;
+}
+
+.row-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-touch {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #eee;
+    border: 2px solid #888;
+    cursor: pointer;
+}
+
+/* Zeige Buttons bei kleinen Screens */
+@media (max-width: 1024px) {
+    #touch-controls {
+        display: flex;
+    }
+}
+
+
 /* Animation for Snake Level Unlocking */
 
 @keyframes unlockPulse {
