@@ -1,6 +1,14 @@
 <?php
 include 'initial.php';
-$arkanoidGameId = 3;
+
+$gameName = 'Arkanoid';
+$sql = "SELECT id FROM games WHERE name = ?";
+$stmt = $db->prepare($sql);
+$stmt->bind_param("s", $gameName);
+$stmt->execute();
+$stmt->bind_result($gameID);
+$stmt->fetch();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -27,59 +35,40 @@ $arkanoidGameId = 3;
         <div id="header"></div>
 
         <div class="game-content-container">
-            <h1>Arkanoid</h1>
+            <h2>Arkanoid</h2>
             <div class="center-select">
                 <div>
                     <div id="ball-selection" class="text-center">
-                        <h2>Wähle deinen Ball</h2>
+                        <h4 class="ball-selection-title">Wähle deinen Ball</h4>
 
                         <div>
-                            <button class="btn btn-primary" onclick="selectBall('#0095DD')">Blauer Ball</button>
-                            <button class="btn btn-danger" onclick="selectBall('#FF0000')">Roter Ball</button>
+                            <button class="btn btn-primary" id="arkanoid-ball-blue">Blauer Ball</button>
+                            <button class="btn btn-danger" id="arkanoid-ball-red">Roter Ball</button>
                         </div>
                     </div>
 
-                    <div style="padding-top: 13px;">
+                    <div id="arkanoid-level-selection" style="display: none; padding-top: 13px;">
                         <button class="level-button" id="arkanoid-btn-lv1">Lvl 1</button>
                         <button class="level-button locked" id="arkanoid-btn-lv2">Lvl 2</button>
                         <button class="level-button locked" id="arkanoid-btn-lv3">Lvl 3</button>
                     </div>
-                    <!--<div id="level-popup" class="popup" style="display: none;">
-                        <p>Level 1 abgeschlossen!</p>
-                    </div>
 
-                    <div id="level-status-1" class="status-bar" style="display: none;">
-                        <span id="level-status-text-1">Level 1 - Läuft</span>
-                        <span id="check-symbol-1" class="check-symbol" style="display: none;">✔</span>
-                    </div>
-
-                    <div id="level-status-2" class="status-bar" style="display: none;">
-                        <span id="level-status-text-2">Level 2 - Läuft</span>
-                        <span id="check-symbol-2" class="check-symbol" style="display: none;">✔</span>
-                    </div>
-
-                    <div id="level-status-3" class="status-bar" style="display: none;">
-                        <span id="level-status-text-3">Level 3 - Läuft</span>
-                        <span id="check-symbol-3" class="check-symbol" style="display: none;">✔</span>
-                    </div>-->
                     <div class="game-container-arkanoid">
-                        <canvas id="arkanoidCanvas" width="815" height="400" style="border:1px solid #000; display: none;"></canvas>
+                        <canvas id="arkanoidCanvas" width="815" height="400"></canvas>
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
-    <div class="text-center">
-        <a href="index.php" class="btn btn-primary mt-3">Zurück zur Startseite</a>
-    </div>
+
     <div id="footer"></div>
-    <script src="./javascript/header-footer-loading.js"></script>
     <script>
-        const ARCANOID_GAME_ID = <?= $arkanoidGameId; ?>;
-        const IS_LOGGED_IN = <?= json_encode($loggedIn); ?>;
+        const ARKANOID_GAME_ID = <?= $gameID ?>;
     </script>
-    <script src="./javascript/arkanoid.js"></script>
+    <script src="./javascript/save-progress.js"></script>
+    <script src="./javascript/arkanoid.js" defer></script>
+    <script src="./javascript/header-footer-loading.js"></script>
 </body>
 
 </html>

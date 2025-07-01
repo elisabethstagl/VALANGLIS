@@ -25,30 +25,71 @@ let ballImage = null; // Balltextur (Bild)
 function selectBall(color) {
   ballColor = color;
   ballImage = null;
-  // Paddle-Farbe anpassen
   paddleColor = (color === "#FF0000") ? "#FF0000" : "#0095DD";
+
+  // Zeige die Level-Auswahl nach Ballwahl
+  const levelSelect = document.getElementById("arkanoid-level-selection");
+  if (levelSelect) {
+    levelSelect.style.display = "block";
+  }
+
   startGame();
 }
 
-//*function selectBallImage(imageSrc) {
-//  ballImage = new Image();
-//  ballImage.src = `./images/${imageSrc}`; // Lade das Bild
-//  ballColor = null; // Entferne die Farbe
-//  startGame();
-//}
+function registerBallSelectHandlers() {
+  document
+    .getElementById("arkanoid-ball-blue")
+    .addEventListener("click", () => selectBall("#0095DD"));
+
+  document
+    .getElementById("arkanoid-ball-red")
+    .addEventListener("click", () => selectBall("#FF0000"));
+}
+
+if (document.readyState === "loading") {
+  // Seite ist noch nicht komplett geparst
+  document.addEventListener("DOMContentLoaded", registerBallSelectHandlers);
+} else {
+  // DOM ist schon fertig → sofort registrieren
+  registerBallSelectHandlers();
+}
 
 function startGame() {
-  document.getElementById("ball-selection").style.display = "none"; // Verstecke die Ballauswahl
-  document.getElementById("arkanoidCanvas").style.display = "block"; // Zeige das Spielfeld
+  // Ballgeschwindigkeit und Position neu setzen
+  dx = 0;
+  dy = -2;
+  x = canvas.width / 2;
+  y = canvas.height - 30 - ballRadius;
 
-  // Zeige die Status-Bar für das aktuelle Level
-  /*if (currentLevel === 1) {
-    document.getElementById("level-status-1").style.display = "flex";
-  } else if (currentLevel === 2) {
-    document.getElementById("level-status-2").style.display = "flex";
-  }*/
+  document.getElementById("ball-selection").style.display = "none";
+  document.getElementById("arkanoidCanvas").style.display = "block";
 
-  draw(); // Starte das Spiel
+  draw();
+}
+
+// Lädt ein Level frisch, egal wann der Button geklickt wurde
+function switchLevel(level) {
+  const btn = document.getElementById(`arkanoid-btn-lv${level}`);
+  if (!btn || btn.classList.contains("locked")) return;
+
+  currentLevel = level;
+  isGameStarted = false;
+  isGameOver = false;
+  dx = 0;
+  dy = -2;
+
+  if (level === 1) {
+    resetGame(); // baut Level-1-Bricks auf
+    document.getElementById("ball-selection").style.display = "none";
+    document.getElementById("arkanoidCanvas").style.display = "block";
+  } else if (level === 2) {
+    startLevel2();
+  } else if (level === 3) {
+    startLevel3();
+  }
+
+  persistLevel(level);
+  draw(); // direkt rendern
 }
 
 // Paddle properties
@@ -102,6 +143,34 @@ function mouseMoveHandler(e) {
   }
 }
 
+function touchMoveHandler(e) {
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.touches[0];
+  const relativeX = touch.clientX - rect.left;
+
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
+  }
+  // Scrollen verhindern
+  e.preventDefault();
+}
+
+canvas.addEventListener(
+  "touchstart",
+  (e) => {
+    if (!isGameStarted) {
+      isGameStarted = true;
+      e.preventDefault();        
+    }
+  },
+  { passive: false }          
+);
+
+
+
+canvas.addEventListener("touchmove", touchMoveHandler, { passive: false });
+
+
 function keyDownHandler(e) {
   if (
     e.key === "Right" ||
@@ -141,51 +210,35 @@ function keyUpHandler(e) {
 // Funktion, um das nächste Level zu starten
 function nextLevel() {
   if (currentLevel === 1) {
-    // Level 1 abgeschlossen
-    //const levelStatusText1 = document.getElementById("level-status-text-1");
-    //const checkSymbol1 = document.getElementById("check-symbol-1");
     const nextlevelbtn = document.getElementById("arkanoid-btn-lv2");
     nextlevelbtn.classList.remove("locked");
-    //levelStatusText1.textContent = "Level 1 - Abgeschlossen";
-    //checkSymbol1.style.display = "inline";
+
+    persistLevel(2);
 
     setTimeout(() => {
       currentLevel++;
-      //const levelStatus2 = document.getElementById("level-status-2");
-      //const levelStatusText2 = document.getElementById("level-status-text-2");
-      //levelStatus2.style.display = "flex";
-      //levelStatusText2.textContent = "Level 2 - Läuft";
       startLevel2();
     }, 2000);
+
   } else if (currentLevel === 2) {
-    // Level 2 abgeschlossen
-    //const levelStatusText2 = document.getElementById("level-status-text-2");
-    //const checkSymbol2 = document.getElementById("check-symbol-2");
-    //levelStatusText2.textContent = "Level 2 - Abgeschlossen";
-    //checkSymbol2.style.display = "inline";
     const nextlevelbtn = document.getElementById("arkanoid-btn-lv3");
     nextlevelbtn.classList.remove("locked");
 
-    setTimeout(() => {
-      currentLevel++;
-      //const levelStatus3 = document.getElementById("level-status-3");
-      //const levelStatusText3 = document.getElementById("level-status-text-3");
-      //levelStatus3.style.display = "flex";
-      //levelStatusText3.textContent = "Level 3 - Läuft";
-      startLevel3();
-    }, 2000);
-  } else if (currentLevel === 3) {
-    // Level 3 abgeschlossen
-    //const levelStatusText3 = document.getElementById("level-status-text-3");
-    //const checkSymbol3 = document.getElementById("check-symbol-3");
-    //levelStatusText3.textContent = "Level 3 - Abgeschlossen";
-    //checkSymbol3.style.display = "inline";
+    persistLevel(3);
+
 
     setTimeout(() => {
-      showVictoryOverlay(); // <--- NEU
+      currentLevel++;
+      startLevel3();
+    }, 2000);
+
+  } else if (currentLevel === 3) {
+    setTimeout(() => {
+      showVictoryOverlay();
     }, 1000);
   }
 }
+
 
 function startLevel2() {
   // Initialisiere Level 2
@@ -373,48 +426,49 @@ function movePaddle() {
 
 // Reset game function
 function resetGame() {
-  // Spielstatus zurücksetzen
   isGameStarted = false;
-  currentLevel = 1; // Zurücksetzen auf Level 1
-  remainingBricks = brickRowCount * brickColumnCount; // Bricks zurücksetzen
+  isGameOver = false;
 
-  // Bricks neu initialisieren
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].status = 1; // Alle Bricks wieder aktiv setzen
+  // Bricks und Spielzustand je nach aktuellem Level initialisieren
+  if (currentLevel === 1) {
+    brickRowCount = 5;
+    brickColumnCount = 9;
+    bricks = [];
+    for (let c = 0; c < brickColumnCount; c++) {
+      bricks[c] = [];
+      for (let r = 0; r < brickRowCount; r++) {
+        const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+        const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+        bricks[c][r] = { x: brickX, y: brickY, status: 1 };
+      }
     }
+    remainingBricks = brickRowCount * brickColumnCount;
+  } else if (currentLevel === 2) {
+    startLevel2();
+    return; // Level 2 wird komplett von startLevel2() gesetzt
+  } else if (currentLevel === 3) {
+    startLevel3();
+    return; // Level 3 wird komplett von startLevel3() gesetzt
   }
 
   // Ball und Paddle zurücksetzen
   x = canvas.width / 2;
   y = canvas.height - 30 - ballRadius;
-  dx = 0; // Keine horizontale Bewegung
-  dy = -2; // Vertikale Bewegung nach oben
+  dx = 0;
+  dy = -2;
   paddleX = (canvas.width - paddleWidth) / 2;
 
-  // Fortschritt zurücksetzen (für den Fall, dass du es brauchst)
-  sessionStorage.setItem("arkanoidLevel", "1");
-  currentLevel = 1;
+  const stored = parseInt(sessionStorage.getItem("arkanoidLevel"), 10) || 1;
+  if (currentLevel > stored) {
+    sessionStorage.setItem("arkanoidLevel", String(currentLevel));
+  }
 
-  // Alle Status-Bars ausblenden und zurücksetzen
-  /*document.getElementById("level-status-1").style.display = "none";
-  document.getElementById("level-status-2").style.display = "none";
-  document.getElementById("level-status-3").style.display = "none";
 
-  document.getElementById("level-status-text-1").textContent =
-    "Level 1 - Läuft";
-  document.getElementById("check-symbol-1").style.display = "none";
-  document.getElementById("level-status-text-2").textContent =
-    "Level 2 - Läuft";
-  document.getElementById("check-symbol-2").style.display = "none";
-  document.getElementById("level-status-text-3").textContent =
-    "Level 3 - Läuft";
-  document.getElementById("check-symbol-3").style.display = "none";
-
-  // Zeige die Ballauswahl*/
+  // Oberfläche zurücksetzen
   document.getElementById("ball-selection").style.display = "block";
   document.getElementById("arkanoidCanvas").style.display = "none";
 }
+
 
 let isGameOver = false; // NEU: Game Over Status
 
@@ -449,37 +503,9 @@ function showGameOverOverlay() {
   };
 }
 
-document.getElementById("arkanoid-btn-lv1").onclick = function () {
-  if (
-    document.getElementById("arkanoid-btn-lv1").classList.contains("locked")
-  ) {
-    return;
-  } // Verhindere das Starten, wenn Level 1 gesperrt ist
-  currentLevel = 1; // Setze das Level auf 1
-  startGame(); // Starte das Spiel
-  console.log("Level 1 gestartet");
-};
-
-document.getElementById("arkanoid-btn-lv2").onclick = function () {
-  if (
-    document.getElementById("arkanoid-btn-lv2").classList.contains("locked")
-  ) {
-    return;
-  } // Verhindere das Starten, wenn Level 1 gesperrt ist
-  currentLevel = 2; // Setze das Level auf 2
-  startGame(); // Starte das Spiel
-  console.log("Level 2 gestartet");
-};
-document.getElementById("arkanoid-btn-lv3").onclick = function () {
-  if (
-    document.getElementById("arkanoid-btn-lv3").classList.contains("locked")
-  ) {
-    return;
-  } // Verhindere das Starten, wenn Level 3 gesperrt ist
-  console.log("Level 3 gestartet");
-  currentLevel = 3;
-  startGame(); // Starte das Spiel
-};
+document.getElementById("arkanoid-btn-lv1").onclick = () => switchLevel(1);
+document.getElementById("arkanoid-btn-lv2").onclick = () => switchLevel(2);
+document.getElementById("arkanoid-btn-lv3").onclick = () => switchLevel(3);
 
 function showVictoryOverlay() {
   // Overlay nur einmal anzeigen
@@ -551,22 +577,26 @@ function draw() {
         break;
       }
 
-      // Prüfe auf Kollision mit dem Paddle
+      // Prüfe auf Kollision mit dem Paddle (inkl. Ballradius!)
       if (y + ballRadius > canvas.height - paddleHeight) {
-        if (x > paddleX && x < paddleX + paddleWidth) {
+        const hitPaddle =
+          x + ballRadius > paddleX && x - ballRadius < paddleX + paddleWidth;
+
+        if (hitPaddle) {
           const paddleCenter = paddleX + paddleWidth / 2;
-          const hitPosition = (x - paddleCenter) / (paddleWidth / 2); // Wert zwischen -1 und 1
-          dx = hitPosition * 4; // Skaliere die horizontale Geschwindigkeit
-          dy = -dy; // Vertikale Richtung umkehren
+          const hitPosition = (x - paddleCenter) / (paddleWidth / 2);
+          dx = hitPosition * 4;
+          dy = -dy;
           break;
         } else {
-          // Ball ist unter das Paddle gefallen – Spiel vorbei!
+          // Ball hat Paddle verfehlt
           isGameStarted = false;
           isGameOver = true;
           showGameOverOverlay();
-          return; // Stoppe das Zeichnen
+          return;
         }
       }
+
 
       // Ball fällt ganz nach unten (Failsafe, falls Paddle nicht getroffen)
       if (y - ballRadius > canvas.height) {
@@ -594,4 +624,37 @@ movePaddle();
 
 requestAnimationFrame(draw);
 
-draw();
+function persistLevel(level) {
+  // 1) immer die höhere Zahl speichern
+  const stored = parseInt(sessionStorage.getItem("arkanoidLevel"), 10) || 1;
+  if (level > stored) {
+    sessionStorage.setItem("arkanoidLevel", String(level));
+    if (typeof saveProgressToDatabase === "function") {
+      saveProgressToDatabase(ARKANOID_GAME_ID, level);
+    }
+  }
+}
+
+function syncArkanoidProgress() {
+  const level = parseInt(sessionStorage.getItem("arkanoidLevel"), 10) || 1;
+
+  // Buttons erst freischalten, DANN Events binden
+  if (level >= 2) {
+    document.getElementById("arkanoid-btn-lv2").classList.remove("locked");
+  }
+  if (level >= 3) {
+    document.getElementById("arkanoid-btn-lv3").classList.remove("locked");
+  }
+
+  // Progress auch an die DB pushen, falls eingeloggt
+  if (typeof saveProgressToDatabase === "function") {
+    saveProgressToDatabase(ARKANOID_GAME_ID, level);
+  }
+}
+
+// DOM fertig?  →  Progress synchronisieren
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", syncArkanoidProgress);
+} else {
+  syncArkanoidProgress();
+}
